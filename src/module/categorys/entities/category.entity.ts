@@ -1,4 +1,4 @@
-import { Map } from "src/module/maps/entities/map.entity";
+import { Earthquake } from "src/module/earthquakes/entities/earthquake.entity";
 import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -16,8 +16,8 @@ export class Category {
     @Column({ unique: false })
     image!: string 
 
-    // 1 category có nhiều map
-    @OneToMany(() => Map, (map) => map.categorys)
-    maps!: Map[]
+    // 1 category có nhiều Earthquake
+    @OneToMany(() => Earthquake, (earthquake) => earthquake.categorys)
+    earthquake!: Earthquake[]
 }
 

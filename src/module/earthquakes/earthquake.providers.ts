@@ -1,12 +1,12 @@
 import { DataSource } from 'typeorm';
-import { Map } from './entities/map.entity'; 
+import { Earthquake } from './entities/earthquake.entity'; 
 
-export const mapsProviders = [
+export const earthquakeProviders = [
   {
-    provide: 'MAPS_REPOSITORY',
+    provide: 'EARTHQUAKES_REPOSITORY',
     useFactory: (dataSource: DataSource) => {
       try {
-        return dataSource.getRepository(Map);
+        return dataSource.getRepository(Earthquake);
       } catch (err) {
         console.log("Chưa kết nối database");
       }

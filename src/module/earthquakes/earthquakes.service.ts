@@ -1,29 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateMapDto } from './dto/create-map.dto';
-import { UpdateMapDto } from './dto/update-map.dto';
+import { CreateEarthquakeDto } from './dto/create-earthquake.dto';
+import { UpdateEarthquakeDto } from './dto/update-earthquake.dto';
 import { Repository } from 'typeorm';
-import { Map } from './entities/map.entity';
-
-//map api
-import mapapi from 'src/services/mapApi/mapapi';
-
-
+import { Earthquake } from './entities/earthquake.entity';
 @Injectable()
-export class MapsService {
+export class EarthquakesService {
   constructor(
-    @Inject('MAPS_REPOSITORY')
-    private mapRepository: Repository<Map>,
+    @Inject('EARTHQUAKES_REPOSITORY')
+    private earthquakeRepository: Repository<Earthquake>,
   ) {}
 
-
-
-
-  demochangelocation(){
-    mapapi.conver();
-  }
-
-
-
+  
 
   async create(data:any) {
     console.log("data",data);
@@ -41,7 +28,7 @@ export class MapsService {
         categorys:{id:data.CategoryId},
         time:currentTime
         }
-      const categorys=await this.mapRepository.save(data1);
+      const categorys=await this.earthquakeRepository.save(data1);
       console.log("ok");
       
     } 
@@ -64,7 +51,7 @@ console.log("err",err);
 
     try{
 
-      let getAllMap= await this.mapRepository.find({where:{block:"null"},relations: ['categorys']})
+      let getAllMap= await this.earthquakeRepository.find({where:{block:"null"},relations: ['categorys']})
       console.log("getAllMap",getAllMap);
       
       return {
@@ -84,7 +71,7 @@ console.log("err",err);
   
   async getNotificate(data:any) {
     const targetDate = new Date('2023-10-12T03:51:34.000Z');
-    const query = this.mapRepository.createQueryBuilder("Map")
+    const query = this.earthquakeRepository.createQueryBuilder("Map")
   .where('Map.time > :targetDate', { targetDate })
   .getMany();
 

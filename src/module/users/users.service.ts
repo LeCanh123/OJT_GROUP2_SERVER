@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import MailService from 'src/services/mail';
-import { Map } from '../maps/entities/map.entity';
+import { Earthquake } from '../earthquakes/entities/earthquake.entity'; 
 
 
 @Injectable()
@@ -12,8 +12,8 @@ export class UsersService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<User>,
-    @Inject('MAPS_REPOSITORY')
-    private mapRepository: Repository<Map>,
+    @Inject('EARTHQUAKES_REPOSITORY')
+    private earthquakeRepository: Repository<Earthquake>,
 
   ) {}
 

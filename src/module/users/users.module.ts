@@ -3,15 +3,15 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { DatabaseModule } from '../typeorms/database.module';
 import { usersProviders } from './users.providers';
-import { mapsProviders } from '../maps/maps.providers';
-import { MapsService } from '../maps/maps.service';
-import { MapsController } from '../maps/maps.controller';
+import { earthquakeProviders } from '../earthquakes/earthquake.providers'; 
+import { EarthquakesService } from '../earthquakes/earthquakes.service'; 
+import { EarthquakesController } from '../earthquakes/earthquakes.controller'; 
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [UsersController,MapsController],
+  controllers: [UsersController,EarthquakesController],
   providers: [UsersService,...usersProviders,
-              MapsService,...mapsProviders,
+    EarthquakesService,...earthquakeProviders,
   
   ],
 })
