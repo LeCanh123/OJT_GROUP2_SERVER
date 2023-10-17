@@ -75,7 +75,6 @@ export class CategorysController {
       throw new HttpException('Controller error', HttpStatus.BAD_REQUEST);
     }
   }
-
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -100,3 +99,4 @@ export class CategorysController {
     }
   }
 }
+
