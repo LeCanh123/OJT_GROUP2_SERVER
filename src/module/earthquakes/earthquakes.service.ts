@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateEarthquakeDto } from './dto/create-earthquake.dto';
 import { UpdateEarthquakeDto } from './dto/update-earthquake.dto';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Earthquake } from './entities/earthquake.entity';
+import { log } from 'console';
 @Injectable()
 export class EarthquakesService {
   constructor(
@@ -11,37 +12,29 @@ export class EarthquakesService {
   ) {}
   async create(data:any) {
     console.log("data",data);
-    
     try{
       const currentTime = new Date();
       const data1: any = {
         name: data.name,
-        locationx:data.locationx,
-        locationy:data.locationy,
+        lat:data.lat,
+        lng:data.lng,
         size:data.size,
-        country: data.country,
+        level:data.level,
+        place: data.place,
         categorys:{id:data.CategoryId},
         time:currentTime
         }
-      const categorys=await this.earthquakeRepository.save(data1);
-      console.log("ok");
-      
+      const categorys=await this.earthquakeRepository.save(data);
+      console.log("ok");   
     } 
     catch(err){ 
-console.log("err",err); 
-
+      console.log("err",err); 
     }
-    return 'This action adds a new map';
+    return {
+      data:data,
+      message:"Create succers"
+    }
   }
-
-  update(data) {
-    return `This action updates a # map`;
-  }
-
-  remove(data) {
-    return `This action removes a # map`;
-  }
-
   async getAll() {
 
     try{
@@ -60,22 +53,59 @@ console.log("err",err);
     }
     // return `This action removes a # map`;
   }
-
-
-  //lấy thông báo cho người dùng
-  
-  async getNotificate(data:any) {
+   //lấy thông báo cho người dùng
+   async getNotificate(data:any) {
     const targetDate = new Date('2023-10-12T03:51:34.000Z');
     const query = this.earthquakeRepository.createQueryBuilder("Map")
   .where('Map.time > :targetDate', { targetDate })
   .getMany();
-
 query.then(results => {
   console.log("results",results); // Kết quả đã lọc được
 }).catch(error => {
   console.error(error); // Xử lý lỗi nếu có
 });
   }
+  async findOne(id:string){
+    log("id",id)
+  try {
+    let earthquake= await this.earthquakeRepository.findOne({where:{id:id},relations:{categorys:true}})
+    console.log("ee",earthquake);
+    return {
+      data:earthquake,
+      message:"Get Ok"
+    }
+  } catch (error) {
+    return [false,"Model Err",null]
+  }
+  }
+ async searchByName(searchByName:string){
+    try {
+      let earthquake=this.earthquakeRepository.find({
+        where:{
+          name:ILike(`%${searchByName}`)
+        }
+      })
+      return {
+        data:earthquake,
+        message:"Search OK!"
+      }
+    } catch (error) {
+      return [false,"Model err",null]
+    }
+  }
+
+  update(data) {
+    return `This action updates a # map`;
+  }
+
+  remove(data) {
+    return `This action removes a # map`;
+  }
+
+
+
+
+ 
 
 
 

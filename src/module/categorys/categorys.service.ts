@@ -62,6 +62,7 @@ export class CategorysService {
         where: {
           id: id,
         },
+      
       });
       if (!category) {
         return {

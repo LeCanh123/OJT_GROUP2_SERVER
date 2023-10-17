@@ -67,9 +67,10 @@ export class CategorysController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Res() res: Response) {
+ async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
-      return res.status(HttpStatus.OK).json(this.categorysService.findOne(id));
+      let result=this.categorysService.findOne(id)
+      return res.status(HttpStatus.OK).json(result);
     } catch (error) {
       console.log('err', error);
       throw new HttpException('Controller error', HttpStatus.BAD_REQUEST);
