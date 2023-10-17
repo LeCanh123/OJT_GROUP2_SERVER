@@ -6,7 +6,6 @@ import { User } from './entities/user.entity';
 import MailService from 'src/services/mail';
 import { Map } from '../maps/entities/map.entity';
 
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -14,18 +13,14 @@ export class UsersService {
     private userRepository: Repository<User>,
     @Inject('MAPS_REPOSITORY')
     private mapRepository: Repository<Map>,
-
   ) {}
-
-
 
   create(createUserDto: CreateUserDto) {
     return 'This action adds a new user';
   }
 
-
   //kiểm tra gửi thông báo user
-  checkNotification(){
+  checkNotification() {
     //giải nén user
 
     //tìm thời gian xem thông báo của user
@@ -40,86 +35,52 @@ export class UsersService {
     const savedTime = new Date(currentTimeString);
     const elapsedTime = Date.now() - savedTime.getTime();
     console.log(`Thời gian đã trôi qua: ${elapsedTime}ms`);
-
-
-
-
-
-
   }
-
 
   //thay đổi thời gian user xem thông báo
-  async changeTimeNotification(data){
+  async changeTimeNotification(data) {
     //thay đổi thời gian đọc thông báo của user
 
-try{
-  const currentTime = new Date();
-  let changeTimeResult=await this.userRepository
-  .createQueryBuilder()
-  .update(User)
-  .set({ time: currentTime})
-  .where("id = :id", { id: "33378f43-671e-11ee-8359-b07b254d818e" })
-  .execute()
-
-}
-catch(err){
-
-}
-
-
-
+    try {
+      const currentTime = new Date();
+      const changeTimeResult = await this.userRepository
+        .createQueryBuilder()
+        .update(User)
+        .set({ time: currentTime })
+        .where('id = :id', { id: '33378f43-671e-11ee-8359-b07b254d818e' })
+        .execute();
+    } catch (err) {}
   }
-
-
-
 
   //admin
 
   //gửi email cho user
-  async sendEmail(data){
-  //lấy danh sách trong database
+  async sendEmail(data) {
+    //lấy danh sách trong database
 
-  
-
-try{
-  let getUserEmail=await this.userRepository.find();
-  console.log("getUserEmail",getUserEmail);
-  getUserEmail.map(async (item:any)=>{
-  //gửi mail
-  await MailService.sendMail({
-    to: item.email,
-    subject: "Thông Báo Thiên Tai",
-    html: `<div>Có thiên tai ở vị trí x y</div>`
-  })
-  return
-
-
-
-  })
-  return {
-    status:true,
-    message:"Gửi tin nhắn thành công"
+    try {
+      const getUserEmail = await this.userRepository.find();
+      console.log('getUserEmail', getUserEmail);
+      getUserEmail.map(async (item: any) => {
+        //gửi mail
+        await MailService.sendMail({
+          to: item.email,
+          subject: 'Thông Báo Thiên Tai',
+          html: `<div>Có thiên tai ở vị trí x y</div>`,
+        });
+        return;
+      });
+      return {
+        status: true,
+        message: 'Gửi tin nhắn thành công',
+      };
+    } catch (err) {
+      return {
+        status: false,
+        message: 'Gửi tin nhắn thất bại',
+      };
+    }
   }
-
-}
-catch(err){
-  return {
-    status:false,
-    message:"Gửi tin nhắn thất bại"
-  }
-}
-
-
-  }
-
-
-
-
-
-
-
-
 
   // findAll() {
   //   return `This action returns all users`;

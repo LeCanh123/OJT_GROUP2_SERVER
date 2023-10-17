@@ -9,10 +9,7 @@ import { MapsController } from '../maps/maps.controller';
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [UsersController,MapsController],
-  providers: [UsersService,...usersProviders,
-              MapsService,...mapsProviders,
-  
-  ],
+  controllers: [UsersController, MapsController],
+  providers: [UsersService, ...usersProviders, MapsService, ...mapsProviders],
 })
 export class UsersModule {}

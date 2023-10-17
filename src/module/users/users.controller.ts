@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -12,31 +21,19 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-
-
-
   //gửi tin nhắn cho toàn bộ user
-  @Post("sendemail")
+  @Post('sendemail')
   sendEmail(@Body() data) {
     //xác nhận admin
-
 
     return this.usersService.sendEmail(data);
   }
 
-
-    //thay đổi thời gian xem thông báo
-    @Post("changetime")
-    changeTime(@Body() data) {
+  //thay đổi thời gian xem thông báo
+  @Post('changetime')
+  changeTime(@Body() data) {
     //giải nén user
-  
-      return this.usersService.changeTimeNotification(data);
-    }
 
-
-
-
-
-
-
+    return this.usersService.changeTimeNotification(data);
+  }
 }
