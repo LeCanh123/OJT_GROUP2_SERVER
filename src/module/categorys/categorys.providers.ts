@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { Category } from './entities/category.entity'; 
+import { Category } from './entities/category.entity';
 
 export const categorysProviders = [
   {
@@ -8,7 +8,7 @@ export const categorysProviders = [
       try {
         return dataSource.getRepository(Category);
       } catch (err) {
-        console.log("Chưa kết nối database");
+        console.log('Chưa kết nối database');
       }
     },
     inject: ['DATA_SOURCE'],

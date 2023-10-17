@@ -9,20 +9,15 @@ export class EarthquakesService {
     @Inject('EARTHQUAKES_REPOSITORY')
     private earthquakeRepository: Repository<Earthquake>,
   ) {}
-
-  
-
   async create(data:any) {
     console.log("data",data);
     
     try{
       const currentTime = new Date();
-      const currentTimeString = currentTime.toString();
-      let data1:any={
-        name:data.name,
+      const data1: any = {
+        name: data.name,
         locationx:data.locationx,
         locationy:data.locationy,
-        block:"null",
         size:data.size,
         country: data.country,
         categorys:{id:data.CategoryId},
@@ -51,7 +46,7 @@ console.log("err",err);
 
     try{
 
-      let getAllMap= await this.earthquakeRepository.find({where:{block:"null"},relations: ['categorys']})
+      let getAllMap= await this.earthquakeRepository.find()
       console.log("getAllMap",getAllMap);
       
       return {

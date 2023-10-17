@@ -1,69 +1,102 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFiles } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UploadedFiles,
+  Query,
+  Res,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { CategorysService } from './categorys.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Express } from 'express'
-import { Multer } from 'multer';
 import * as path from 'path';
 import * as fs from 'fs';
-import { uploadFileToStorage } from 'src/services/meobase'; 
+import { Response } from 'express';
+
+import { uploadFileToStorage } from 'src/services/meobase';
 @Controller('categorys')
 export class CategorysController {
   constructor(private readonly categorysService: CategorysService) {}
-
-  @Post('admin/add')
-  async create(@Body() data ,@UploadedFiles() image: Array<Express.Multer.File>) {
-    const originalFileName = image?.[0]?.originalname;
-    console.log("originalFileName",image);
-    
+  @Post('')
+  async create(
+    @Body() data,
+    @UploadedFiles() icon: Array<Express.Multer.File>,
+  ) {
+    const originalFileName = icon?.[0]?.originalname;
+    console.log('originalFileName', icon);
     const fileExtension = path.extname(originalFileName); // Trích xuất đuôi tệp tin
-    const uploadedFilePath = image?.[0]?.path;
+    const uploadedFilePath = icon?.[0]?.path;
     const newFilePath = uploadedFilePath + fileExtension; // Đường dẫn mới với đuôi tệp tin đúng
     fs.renameSync(uploadedFilePath, newFilePath); // Đổi tên tệp tin
     //upload
     let avatarProcess;
-    if(image?.[0]){
-      avatarProcess = await uploadFileToStorage(image[0], "image", fs.readFileSync(newFilePath));
-     }
+    if (icon?.[0]) {
+      avatarProcess = await uploadFileToStorage(
+        icon[0],
+        'image',
+        fs.readFileSync(newFilePath),
+      );
+    }
     //xoá sau khi upload
     fs.unlinkSync(newFilePath);
-
-    let createCategoryResult=await this.categorysService.create({...data,image:avatarProcess});
+    const createCategoryResult = await this.categorysService.create({
+      ...data,
+      icon: avatarProcess,
+    });
     return createCategoryResult;
-
-
-    // return this.categorysService.create(data);
+  }
+  @Get()
+  async findAll(@Res() res: Response, @Query('q') q: string) {
+    try {
+      if (q != undefined) {
+        return res
+          .status(HttpStatus.OK)
+          .json(await this.categorysService.searchByTitle(q));
+      }
+      return res
+        .status(HttpStatus.OK)
+        .json(await this.categorysService.findAll());
+    } catch (err) {
+      throw new HttpException('Lỗi controller', HttpStatus.BAD_REQUEST);
+    }
   }
 
-  @Post('admin/get')
-  get(@Body() data) {
-    return this.categorysService.getall(data);
+  @Get(':id')
+  findOne(@Param('id') id: string, @Res() res: Response) {
+    try {
+      return res.status(HttpStatus.OK).json(this.categorysService.findOne(id));
+    } catch (error) {
+      console.log('err', error);
+      throw new HttpException('Controller error', HttpStatus.BAD_REQUEST);
+    }
   }
 
-  @Post('admin/delete')
-  delete(@Body() data) {
-    return this.categorysService.delete(data);
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateCategoryDto: UpdateCategoryDto,
+    @Res() res: Response,
+  ) {
+    try {
+      return res
+        .status(HttpStatus.OK)
+        .json(this.categorysService.update(id, updateCategoryDto));
+    } catch (error) {
+      throw new HttpException('Controller err ', HttpStatus.BAD_REQUEST);
+    }
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.categorysService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.categorysService.findOne(+id); 
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-  //   return this.categorysService.update(+id, updateCategoryDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.categorysService.remove(+id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string, @Res() res: Response) {
+    try {
+      return res.status(HttpStatus.OK).json(this.categorysService.remove(id));
+    } catch (error) {
+      throw new HttpException('Controller error', HttpStatus.BAD_REQUEST);
+    }
+  }
 }
-
-

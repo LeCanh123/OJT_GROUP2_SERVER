@@ -5,13 +5,8 @@ import { UsersModule } from './module/users/users.module';
 import { CategorysModule } from './module/categorys/categorys.module';
 import { EarthquakesModule } from './module/earthquakes/earthquakes.module';
 
-
-
 @Module({
-  imports: [UsersModule,CategorysModule,
-    EarthquakesModule
-  
-  ],
+  imports: [UsersModule, CategorysModule, EarthquakesModule],
   controllers: [AppController],
   providers: [AppService],
 })
