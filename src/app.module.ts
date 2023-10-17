@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './module/users/users.module';
 import { CategorysModule } from './module/categorys/categorys.module';
 import { EarthquakesModule } from './module/earthquakes/earthquakes.module';
+
 import { AuthModule } from './services/auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
 import { User } from './module/users/entities/user.entity';
@@ -27,6 +28,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: true,
     }),
   ],
+
   controllers: [AppController],
   providers: [AppService],
 })

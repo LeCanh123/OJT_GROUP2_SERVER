@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import * as multer from 'multer';
 
+
 import * as session from 'express-session';
 import * as passport from 'passport';
 
@@ -17,6 +18,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
+>>>>>>> develop
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: ['1'],
