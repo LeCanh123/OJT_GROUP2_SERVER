@@ -37,14 +37,35 @@ export class EarthquakesService {
       message:"Thêm thành công "
     }
   }
+   // Phân trang
+  async findAllPage(page:number,limit:number){
+    try {
+      const skip =(page-1)*limit;
+      const [earthquake,total]=await this.earthquakeRepository.findAndCount({
+        skip,
+        take:limit,
+      })
+      const totalPage=Math.ceil(total/limit);
+      return {
+        data:earthquake,
+        page,
+        limit,
+        totalPage,
+        message:"Get ok"
+      }
+    } catch (error) {
+      return {
+        success:false,
+        message:"Model err"
+      }      
+    }
+   }
   //Lấy tất cả dang sách
   async getAll() {
-
     try{
 
       let getAllMap= await this.earthquakeRepository.find()
-      console.log("getAllMap",getAllMap);
-      
+      console.log("getAllMap",getAllMap);  
       return {
         status:true,
         data:getAllMap

@@ -51,18 +51,23 @@ export class CategorysController {
     });
     return createCategoryResult;
   }
-  //Lấy và tìm kiếm 
+  //Lấy ,tìm kiếm ,phân trang 
   @Get()
-  async findAll(@Res() res: Response, @Query('q') q: string) {
+  async findAll(
+    @Res() res: Response,
+    @Query('q') q: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
     try {
-      if (q != undefined) {
-        return res
-          .status(HttpStatus.OK)
-          .json(await this.categorysService.searchByTitle(q));
+      const skip = (page - 1) * limit;
+      let result;
+      if (q !== undefined) {
+        result = await this.categorysService.searchByTitle(q);
+      } else {
+        result = await this.categorysService.findAllPage(page, limit);
       }
-      return res
-        .status(HttpStatus.OK)
-        .json(await this.categorysService.findAll());
+      return res.status(HttpStatus.OK).json(result);
     } catch (err) {
       throw new HttpException('Lỗi controller', HttpStatus.BAD_REQUEST);
     }
