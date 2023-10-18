@@ -17,16 +17,23 @@ export class EarthquakesController {
       throw new HttpException("Controller err ",HttpStatus.BAD_REQUEST)
     }
    }
-   //Lấy và tìm kiếm 
+   //Lấy ,tìm kiếm ,phân trang
    @Get()
-   async getAll(@Res() res:Response,@Query('q') q:string) {
+   async findAll(
+    @Res() res:Response,
+    @Query('q') q:string,
+    @Query("page") page:number=1,
+    @Query('limit') limit:number=10,
+    ) {
     try {
+      const skip =(page-1)*limit;
+      let result;
       if (q!=undefined) {
-        return res.status(HttpStatus.OK)
-        .json(await this.earthquakesService.searchByName(q))
+      result= await this.earthquakesService.searchByName(q)
+      }else{
+        result= await this.earthquakesService.findAllPage(page,limit);
       }
-      return res.status(HttpStatus.OK)
-      .json(await this.earthquakesService.getAll())
+      return res.status(HttpStatus.OK).json(result)
     } catch (error) {
       throw new HttpException("Controller err ",HttpStatus.BAD_REQUEST)
     }

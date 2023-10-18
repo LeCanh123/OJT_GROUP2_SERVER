@@ -27,6 +27,30 @@ export class CategorysService {
       console.log('err', err);
     }
   }
+   // Phân trang
+async findAllPage(page: number, limit: number) {
+  try {
+    const skip = (page - 1) * limit;
+    const [category, total] = await this.categoryRepository.findAndCount({
+      skip,
+      take: limit,
+    });
+    const totalPage = Math.ceil(total / limit);
+    return {
+      data: category,
+      page,
+      limit,
+      total,
+      totalPage,
+      message: "Get ok",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Model err",
+    };
+  }
+}
   //Lấy tất cả danh sách 
   async findAll() {
     try {
