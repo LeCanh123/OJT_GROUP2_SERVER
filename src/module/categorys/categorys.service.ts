@@ -27,6 +27,18 @@ export class CategorysService {
       console.log('err', err);
     }
   }
+   //Lấy tất cả danh sách 
+   async findAll() {
+    try {
+      const category = await this.categoryRepository.find();
+      return {
+        data: category,
+        message: 'Get ok',
+      };
+    } catch (error) {
+      return [false, 'Model err', null];
+    }
+  }
    // Phân trang
 async findAllPage(page: number, limit: number) {
   try {
@@ -51,18 +63,7 @@ async findAllPage(page: number, limit: number) {
     };
   }
 }
-  //Lấy tất cả danh sách 
-  async findAll() {
-    try {
-      const category = await this.categoryRepository.find();
-      return {
-        data: category,
-        message: 'Get ok',
-      };
-    } catch (error) {
-      return [false, 'Model err', null];
-    }
-  }
+ 
   //Lấy theo id
   async findOne(id: string) {
     try {
