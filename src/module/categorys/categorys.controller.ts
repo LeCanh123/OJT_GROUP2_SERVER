@@ -19,13 +19,14 @@ import * as fs from 'fs';
 import { Response } from 'express';
 
 import { uploadFileToStorage } from 'src/services/meobase';
+import { CreateCategoryDto } from './dto/create-category.dto';
 @Controller('categorys')
 export class CategorysController {
   constructor(private readonly categorysService: CategorysService) {}
   //Thêm
   @Post('')
   async create(
-    @Body() data,
+    @Body() data: CreateCategoryDto,
     @UploadedFiles() icon: Array<Express.Multer.File>,
   ) {
     const originalFileName = icon?.[0]?.originalname;
@@ -34,6 +35,7 @@ export class CategorysController {
     const uploadedFilePath = icon?.[0]?.path;
     const newFilePath = uploadedFilePath + fileExtension; // Đường dẫn mới với đuôi tệp tin đúng
     fs.renameSync(uploadedFilePath, newFilePath); // Đổi tên tệp tin
+
     //upload
     let avatarProcess;
     if (icon?.[0]) {

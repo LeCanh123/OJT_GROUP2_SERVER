@@ -11,20 +11,29 @@ export class CategorysService {
     private categoryRepository: Repository<Category>,
   ) {}
   //Thêm
-  async create(data) {
+  async create(data: any) {
     console.log('data', data);
     const data1 = {
       title: data.title,
+      block: data.block,
       icon: data.icon,
     };
+    console.log('data1', data1);
+
     try {
       const addCategoryResult = await this.categoryRepository.save(data1);
       return {
         status: true,
         message: 'Thêm thành công',
+        data: addCategoryResult,
       };
     } catch (err) {
-      console.log('err', err);
+      console.log('err Service', err);
+      return {
+        status: false,
+        message: 'Thêm thành công',
+        data: null,
+      };
     }
   }
   //Lấy tất cả danh sách

@@ -9,10 +9,10 @@ import {
 
 @Entity()
 export class Category {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ unique: true })
+  @Column({ unique: false })
   title!: string;
 
   @Column({ default: false })
@@ -24,7 +24,7 @@ export class Category {
   })
   icon: string;
 
-  @Column()
+  @Column({ nullable: true })
   created_at: string;
 
   @BeforeInsert()
