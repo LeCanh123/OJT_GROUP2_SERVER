@@ -51,6 +51,7 @@ export class CategorysController {
     });
     return createCategoryResult;
   }
+
   //Lấy ,tìm kiếm ,phân trang 
   @Get()
   async findAll(
@@ -72,11 +73,24 @@ export class CategorysController {
       throw new HttpException('Lỗi controller', HttpStatus.BAD_REQUEST);
     }
   }
+  @Get()
+  async GetAll(){
+    try {
+      let category= await this.categorysService.findAll()
+      return {
+       category
+      }
+    } catch (error) {
+      console.log("err",error);
+      
+      
+    }
+  }
 //Lấy theo id
   @Get(':id')
  async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
-      let result=this.categorysService.findOne(id)
+      let result= await this.categorysService.findOne(id)
       return res.status(HttpStatus.OK).json(result);
     } catch (error) {
       console.log('err', error);
