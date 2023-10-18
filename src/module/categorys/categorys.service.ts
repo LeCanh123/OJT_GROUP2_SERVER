@@ -10,7 +10,7 @@ export class CategorysService {
     @Inject('CATEGORYS_REPOSITORY')
     private categoryRepository: Repository<Category>,
   ) {}
-  //Thêm 
+  //Thêm
   async create(data) {
     console.log('data', data);
     const data1 = {
@@ -27,8 +27,8 @@ export class CategorysService {
       console.log('err', err);
     }
   }
-   //Lấy tất cả danh sách 
-   async findAll() {
+  //Lấy tất cả danh sách
+  async findAll() {
     try {
       const category = await this.categoryRepository.find();
       return {
@@ -39,31 +39,31 @@ export class CategorysService {
       return [false, 'Model err', null];
     }
   }
-   // Phân trang
-async findAllPage(page: number, limit: number) {
-  try {
-    const skip = (page - 1) * limit;
-    const [category, total] = await this.categoryRepository.findAndCount({
-      skip,
-      take: limit,
-    });
-    const totalPage = Math.ceil(total / limit);
-    return {
-      data: category,
-      page,
-      limit,
-      total,
-      totalPage,
-      message: "Get ok",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: "Model err",
-    };
+  // Phân trang
+  async findAllPage(page: number, limit: number) {
+    try {
+      const skip = (page - 1) * limit;
+      const [category, total] = await this.categoryRepository.findAndCount({
+        skip,
+        take: limit,
+      });
+      const totalPage = Math.ceil(total / limit);
+      return {
+        data: category,
+        page,
+        limit,
+        total,
+        totalPage,
+        message: 'Get ok',
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Model err',
+      };
+    }
   }
-}
- 
+
   //Lấy theo id
   async findOne(id: string) {
     try {
@@ -84,30 +84,29 @@ async findAllPage(page: number, limit: number) {
       return [false, 'Model err', null];
     }
   }
-    //Tìm kiếm
-    async searchByTitle(searchByTitle: string) {
-      try {
-        const category = await this.categoryRepository.find({
-          where: {
-            title: ILike(`%${searchByTitle}%`),
-          },
-        });
-        return {
-          data: category,
-          message: 'Search ok!',
-        };
-      } catch (error) {
-        return [false, 'Model err ', null];
-      }
+  //Tìm kiếm
+  async searchByTitle(searchByTitle: string) {
+    try {
+      const category = await this.categoryRepository.find({
+        where: {
+          title: ILike(`%${searchByTitle}%`),
+        },
+      });
+      return {
+        data: category,
+        message: 'Search ok!',
+      };
+    } catch (error) {
+      return [false, 'Model err ', null];
     }
-  //Sửa 
+  }
+  //Sửa
   async update(id: string, updateCategoryDto: UpdateCategoryDto) {
     try {
       const category = await this.categoryRepository.findOne({
         where: {
           id: id,
         },
-      
       });
       if (!category) {
         return {
@@ -117,6 +116,8 @@ async findAllPage(page: number, limit: number) {
       }
 
       const updatedCategory = Object.assign(category, updateCategoryDto);
+      const isTrueSet = String(updatedCategory.block).toLowerCase() === 'true';
+      updatedCategory.block = isTrueSet;
       await this.categoryRepository.save(updatedCategory);
 
       return {
@@ -160,6 +161,4 @@ async findAllPage(page: number, limit: number) {
       };
     }
   }
-
-
 }

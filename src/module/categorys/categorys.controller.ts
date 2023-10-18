@@ -52,7 +52,7 @@ export class CategorysController {
     return createCategoryResult;
   }
 
-  //Lấy ,tìm kiếm ,phân trang 
+  //Lấy ,tìm kiếm ,phân trang
   @Get()
   async findAll(
     @Res() res: Response,
@@ -73,24 +73,25 @@ export class CategorysController {
       throw new HttpException('Lỗi controller', HttpStatus.BAD_REQUEST);
     }
   }
+
   @Get()
-  async GetAll(){
+  async GetAll() {
     try {
-      let category= await this.categorysService.findAll()
+      let category = await this.categorysService.findAll();
       return {
-       category
-      }
+        category,
+      };
     } catch (error) {
-      console.log("err",error);
-      
-      
+      console.log('err', error);
     }
   }
-//Lấy theo id
+
+  //Lấy theo id
   @Get(':id')
- async findOne(@Param('id') id: string, @Res() res: Response) {
+  async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
-      let result= await this.categorysService.findOne(id)
+      let result = await this.categorysService.findOne(id);
+      console.log('err');
       return res.status(HttpStatus.OK).json(result);
     } catch (error) {
       console.log('err', error);
@@ -99,7 +100,7 @@ export class CategorysController {
   }
   //Sửa
   @Patch(':id')
- async update(
+  async update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
     @Res() res: Response,
@@ -112,7 +113,7 @@ export class CategorysController {
       throw new HttpException('Controller err ', HttpStatus.BAD_REQUEST);
     }
   }
-//Xóa
+  //Xóa
   @Delete(':id')
   remove(@Param('id') id: string, @Res() res: Response) {
     try {
@@ -122,4 +123,3 @@ export class CategorysController {
     }
   }
 }
-

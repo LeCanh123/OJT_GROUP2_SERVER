@@ -9,41 +9,46 @@ import {
 
 @Entity()
 export class Earthquake {
-  @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  @PrimaryGeneratedColumn('increment')
+  id: string;
 
-  @Column({ unique: false })
+  @Column({ unique: true })
   name!: string;
 
-  @Column({ unique: false })
+  @Column()
   lat!: string;
 
-  @Column({ unique: false })
+  @Column()
   lng!: string;
 
-  @Column({ unique: false })
-  level!: string;
+  @Column()
+  level: string;
 
-  @Column({ unique: false }) //tên tỉnh thành phố
+  @Column() //tên tỉnh thành phố
   place!: string;
 
-  @Column({ unique: false }) //phạm vi ảnh hưởng
+  @Column() //phạm vi ảnh hưởng
   size!: number;
 
-  @Column({ nullable: true }) //thời gian bắt đầu sảy ra động đất
-  time_start!: Date;
+  @Column({ type: 'timestamp' }) //thời gian bắt đầu sảy ra động đất
+  time_start: Date;
 
-  @Column({ nullable: true }) //Thời gian kết thúc động đất
-  time_end!: Date;
+  @Column() //Thời gian tạo trên hệ thống
+  created_at: string;
 
-  @Column({ nullable: true }) //Thời gian tạo trên hệ thống
-  created_at!: Date;
+  @BeforeInsert()
+  setCreateTime() {
+    this.created_at = String(Date.now());
+  }
 
-  @Column({ nullable: true }) //Thời gian thông báo
-  time_notification!: Date;
+  @Column()
+  updated_at: string;
+
+  @Column({ type: 'timestamp' })
+  time_notification: Date;
 
   @Column({ default: false })
-  block!: boolean;
+  block: boolean;
 
   //nhiều earthquake liên kết 1 category
   @ManyToOne(() => Category, (category) => category.earthquake)
