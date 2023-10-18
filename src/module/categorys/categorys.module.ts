@@ -8,6 +8,6 @@ import { databaseProviders } from '../typeorms/database.providers';
 @Module({
   imports: [DatabaseModule],
   controllers: [CategorysController],
-  providers: [CategorysService,...categorysProviders,...databaseProviders],
+  providers: [CategorysService, ...categorysProviders, ...databaseProviders],
 })
 export class CategorysModule {}

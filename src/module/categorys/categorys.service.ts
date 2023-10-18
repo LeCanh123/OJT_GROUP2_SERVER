@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 
 @Injectable()
@@ -10,85 +10,123 @@ export class CategorysService {
     @Inject('CATEGORYS_REPOSITORY')
     private categoryRepository: Repository<Category>,
   ) {}
-
-
   async create(data) {
-    console.log("data",data);
-    let data1={
-      type:data.type,
-      block:"null",
-      image:data.image 
+    console.log('data', data);
+    const data1 = {
+      title: data.title,
+      icon: data.icon,
+    };
+    try {
+      const addCategoryResult = await this.categoryRepository.save(data1);
+      return {
+        status: true,
+        message: 'Thêm category thành công',
+      };
+    } catch (err) {
+      console.log('err', err);
     }
-    try{
-
-      let addCategoryResult=await this.categoryRepository.save(data1);
-
-return {
-  status:true,
-  message:"Thêm category thành công"
-}
+  }
+  async findAll() {
+    try {
+      const category = await this.categoryRepository.find();
+      return {
+        data: category,
+        message: 'Get ok',
+      };
+    } catch (error) {
+      return [false, 'Model err', null];
     }
-    catch(err){
+  }
+  async findOne(id: string) {
+    try {
+      const category = await this.categoryRepository.findOne({
+        where: {
+          id: id,
+        },
+        relations: {
+          earthquake: true,
+        },
+      });
+      return {
+        data: category,
+        message: 'Get ok',
+      };
+    } catch (error) {
+      console.log('err', error);
+      return [false, 'Model err', null];
+    }
+  }
+  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+    try {
+      const category = await this.categoryRepository.findOne({
+        where: {
+          id: id,
+        },
+      });
+      if (!category) {
+        return {
+          success: false,
+          message: 'Category not found',
+        };
+      }
 
+      const updatedCategory = Object.assign(category, updateCategoryDto);
+      await this.categoryRepository.save(updatedCategory);
+
+      return {
+        success: true,
+        message: 'Category updated successfully',
+        data: updatedCategory,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Error updating category',
+      };
+    }
+  }
+  async remove(id: string) {
+    try {
+      const category = await this.categoryRepository.findOne({
+        where: {
+          id: id,
+        },
+        relations: {
+          earthquake: true,
+        },
+      });
+      if (!category) {
+        return {
+          success: false,
+          message: 'Category not found',
+        };
+      }
+      await this.categoryRepository.remove(category);
+      return {
+        success: true,
+        message: 'Category removed successfully',
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Error removing category',
+      };
     }
   }
 
-
-  async getall(data) {
-    console.log("data",data);
-    
-    try{
-
-      let getCategoryResult=await this.categoryRepository.find({where:{block:"null"}});
-
-    return {
-      status:true,
-      message:"Lấy category thành công",
-      data:getCategoryResult
+  async searchByTitle(searchByTitle: string) {
+    try {
+      const category = await this.categoryRepository.find({
+        where: {
+          title: ILike(`%${searchByTitle}%`),
+        },
+      });
+      return {
+        data: category,
+        message: 'Search ok!',
+      };
+    } catch (error) {
+      return [false, 'Model err ', null];
     }
-    }
-    catch(err){
-
-    }
-  }
-
-
-  async delete(data) {
-    console.log("data",data);
-    
-    try{
-
-      let deleteCategoryResult=await this.categoryRepository
-                                      .createQueryBuilder()
-                                      .update(Category)
-                                      .set({ block: "true"})
-                                      .where("id = :id", { id: data.id })
-                                      .execute()
-
-    return {
-      status:true,
-      message:"Xoá category thành công",
-      // data:getCategoryResult
-    }
-    }
-    catch(err){
-
-    }
-  }
-
-  findAll() {
-    return `This action returns all categorys`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
-  }
-
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} category`;
   }
 }

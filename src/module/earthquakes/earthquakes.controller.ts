@@ -8,7 +8,7 @@ export class EarthquakesController {
   constructor(private readonly earthquakesService: EarthquakesService) {}
 
    //tạo
-   @Post("/admin/create")
+   @Post()
    create(@Body() data) {
      console.log("data");
      
