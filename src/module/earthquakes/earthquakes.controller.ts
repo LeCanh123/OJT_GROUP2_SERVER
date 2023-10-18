@@ -10,22 +10,14 @@ export class EarthquakesController {
 
    //tạo
    @Post()
-   create(@Body() data) {
-     console.log("data");
-     return this.earthquakesService.create(data);
+  async create(@Body() data,@Res() res:Response) {
+    try {
+     return res.status(HttpStatus.OK).json( await this.earthquakesService.create(data)) ;
+    } catch (error) {
+      throw new HttpException("Controller err ",HttpStatus.BAD_REQUEST)
+    }
    }
-
-   //sửa
-   @Post("update/:id")
-   update(@Body() data) {
-     return this.earthquakesService.update(data);
-   }
-   //xoá
-   @Post("delete/:id")
-   delete(@Body() data) {
-     return this.earthquakesService.remove(data);
-   }
-   //getall
+   //Lấy và tìm kiếm 
    @Get()
    async getAll(@Res() res:Response,@Query('q') q:string) {
     try {
@@ -36,9 +28,10 @@ export class EarthquakesController {
       return res.status(HttpStatus.OK)
       .json(await this.earthquakesService.getAll())
     } catch (error) {
-      throw new HttpException("cOntroller err ",HttpStatus.BAD_REQUEST)
+      throw new HttpException("Controller err ",HttpStatus.BAD_REQUEST)
     }
    }
+   //Lấy theo id
    @Get(":id")
    async findOne(@Param('id') id:string, @Res() res :Response){
     try {
@@ -54,6 +47,21 @@ export class EarthquakesController {
      let getallResult=await this.earthquakesService.getNotificate("");
      return getallResult
    }
+    //sửa
+    @Patch(":id")
+    async update(@Param('id') id:string , @Body() updateEarthquake:UpdateEarthquakeDto,@Res() res:Response) {
+      try {
+        res.status(HttpStatus.OK).json(await this.earthquakesService.update(id,updateEarthquake))
+      } catch (error) {
+        throw new HttpException("Controller error", HttpStatus.BAD_REQUEST)
+      }
+    }
+     //xoá
+     @Post("delete/:id")
+     delete(@Body() data) {
+       return this.earthquakesService.remove(data);
+     }
+     
  
  }
  

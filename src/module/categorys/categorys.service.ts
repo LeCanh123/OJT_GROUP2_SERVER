@@ -10,6 +10,7 @@ export class CategorysService {
     @Inject('CATEGORYS_REPOSITORY')
     private categoryRepository: Repository<Category>,
   ) {}
+  //Thêm 
   async create(data) {
     console.log('data', data);
     const data1 = {
@@ -20,12 +21,13 @@ export class CategorysService {
       const addCategoryResult = await this.categoryRepository.save(data1);
       return {
         status: true,
-        message: 'Thêm category thành công',
+        message: 'Thêm thành công',
       };
     } catch (err) {
       console.log('err', err);
     }
   }
+  //Lấy tất cả danh sách 
   async findAll() {
     try {
       const category = await this.categoryRepository.find();
@@ -37,6 +39,7 @@ export class CategorysService {
       return [false, 'Model err', null];
     }
   }
+  //Lấy theo id
   async findOne(id: string) {
     try {
       const category = await this.categoryRepository.findOne({
@@ -56,6 +59,23 @@ export class CategorysService {
       return [false, 'Model err', null];
     }
   }
+    //Tìm kiếm
+    async searchByTitle(searchByTitle: string) {
+      try {
+        const category = await this.categoryRepository.find({
+          where: {
+            title: ILike(`%${searchByTitle}%`),
+          },
+        });
+        return {
+          data: category,
+          message: 'Search ok!',
+        };
+      } catch (error) {
+        return [false, 'Model err ', null];
+      }
+    }
+  //Sửa 
   async update(id: string, updateCategoryDto: UpdateCategoryDto) {
     try {
       const category = await this.categoryRepository.findOne({
@@ -67,7 +87,7 @@ export class CategorysService {
       if (!category) {
         return {
           success: false,
-          message: 'Category not found',
+          message: 'Không tìm thấy',
         };
       }
 
@@ -76,16 +96,17 @@ export class CategorysService {
 
       return {
         success: true,
-        message: 'Category updated successfully',
+        message: 'Cập nhập thành công',
         data: updatedCategory,
       };
     } catch (error) {
       return {
         success: false,
-        message: 'Error updating category',
+        message: 'Lỗi cập nhập',
       };
     }
   }
+  //Xóa
   async remove(id: string) {
     try {
       const category = await this.categoryRepository.findOne({
@@ -115,19 +136,5 @@ export class CategorysService {
     }
   }
 
-  async searchByTitle(searchByTitle: string) {
-    try {
-      const category = await this.categoryRepository.find({
-        where: {
-          title: ILike(`%${searchByTitle}%`),
-        },
-      });
-      return {
-        data: category,
-        message: 'Search ok!',
-      };
-    } catch (error) {
-      return [false, 'Model err ', null];
-    }
-  }
+
 }

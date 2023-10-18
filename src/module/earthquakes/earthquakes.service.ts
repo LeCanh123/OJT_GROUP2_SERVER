@@ -10,6 +10,7 @@ export class EarthquakesService {
     @Inject('EARTHQUAKES_REPOSITORY')
     private earthquakeRepository: Repository<Earthquake>,
   ) {}
+  //Thêm 
   async create(data:any) {
     console.log("data",data);
     try{
@@ -31,10 +32,12 @@ export class EarthquakesService {
       console.log("err",err); 
     }
     return {
+      status:true,
       data:data,
-      message:"Create succers"
+      message:"Thêm thành công "
     }
   }
+  //Lấy tất cả dang sách
   async getAll() {
 
     try{
@@ -65,6 +68,7 @@ query.then(results => {
   console.error(error); // Xử lý lỗi nếu có
 });
   }
+  //Lấy theo id
   async findOne(id:string){
     log("id",id)
   try {
@@ -78,6 +82,7 @@ query.then(results => {
     return [false,"Model Err",null]
   }
   }
+  //Tìm kiếm 
  async searchByName(searchByName:string){
     try {
       let earthquake=this.earthquakeRepository.find({
@@ -93,9 +98,32 @@ query.then(results => {
       return [false,"Model err",null]
     }
   }
-
-  update(data) {
-    return `This action updates a # map`;
+//Sửa
+  async update(id:string,updateCategoryDto:UpdateEarthquakeDto) {
+   try {
+    let earthquake=await this.earthquakeRepository.findOne({
+      where:{
+        id:id,
+      },
+    })
+    if (!earthquake) {
+      return {
+      success:false,
+      message:"Không tìm thấy"
+      }
+    }
+    let updatedEarthquake=Object.assign(earthquake,updateCategoryDto);
+    return{
+      success:true,
+      message:"Cập nhập thành công",
+      data:updatedEarthquake
+    }
+   } catch (error) {
+    return {
+      success:false,
+      message:"Lỗi cập nhập"
+    }
+   }
   }
 
   remove(data) {
