@@ -22,6 +22,7 @@ import { uploadFileToStorage } from 'src/services/meobase';
 @Controller('categorys')
 export class CategorysController {
   constructor(private readonly categorysService: CategorysService) {}
+  //Thêm
   @Post('')
   async create(
     @Body() data,
@@ -50,6 +51,7 @@ export class CategorysController {
     });
     return createCategoryResult;
   }
+  //Lấy và tìm kiếm 
   @Get()
   async findAll(@Res() res: Response, @Query('q') q: string) {
     try {
@@ -65,7 +67,7 @@ export class CategorysController {
       throw new HttpException('Lỗi controller', HttpStatus.BAD_REQUEST);
     }
   }
-
+//Lấy theo id
   @Get(':id')
  async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
@@ -76,8 +78,9 @@ export class CategorysController {
       throw new HttpException('Controller error', HttpStatus.BAD_REQUEST);
     }
   }
+  //Sửa
   @Patch(':id')
-  update(
+ async update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
     @Res() res: Response,
@@ -85,12 +88,12 @@ export class CategorysController {
     try {
       return res
         .status(HttpStatus.OK)
-        .json(this.categorysService.update(id, updateCategoryDto));
+        .json(await this.categorysService.update(id, updateCategoryDto));
     } catch (error) {
       throw new HttpException('Controller err ', HttpStatus.BAD_REQUEST);
     }
   }
-
+//Xóa
   @Delete(':id')
   remove(@Param('id') id: string, @Res() res: Response) {
     try {
