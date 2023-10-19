@@ -12,8 +12,7 @@ export class UsersService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<User>,
-    @Inject('EARTHQUAKES_REPOSITORY')
-    private earthquakeRepository: Repository<Earthquake>,
+ 
 
   ) {}
 

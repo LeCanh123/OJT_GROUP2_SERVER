@@ -170,4 +170,25 @@ export class CategorysService {
       };
     }
   }
+
+
+  //user get
+  //Lấy tất cả danh sách
+  async userfindAll() {
+    try {
+      const category = await this.categoryRepository.find({where:{block:false}});
+      return {
+        status:true,
+        message:"Lấy danh sách category thành công",
+        data: category,
+      };
+    } catch (error) {
+      return {
+        status:false,
+        message:"Lấy danh sách category thất bại",
+        data: null,
+      };
+    }
+  }
+
 }

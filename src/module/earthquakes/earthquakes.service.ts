@@ -4,11 +4,19 @@ import { UpdateEarthquakeDto } from './dto/update-earthquake.dto';
 import { ILike, Repository } from 'typeorm';
 import { Earthquake } from './entities/earthquake.entity';
 import { log } from 'console';
+import { Category } from '../categorys/entities/category.entity';
+
+
 @Injectable()
 export class EarthquakesService {
   constructor(
     @Inject('EARTHQUAKES_REPOSITORY')
     private earthquakeRepository: Repository<Earthquake>,
+    @Inject('CATEGORYS_REPOSITORY')
+    private categoryRepository: Repository<Category>,
+
+
+
   ) {}
   //Thêm
   async create(data: any) {
@@ -153,5 +161,55 @@ export class EarthquakesService {
         message: 'Lỗi cập nhập',
       };
     }
+  }
+
+
+
+
+
+  //user userGetEarthquakes
+    //get all
+  async userGetEarthquakes(){
+    try {
+      let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false},relations: ['categorys']});
+      console.log('getAllMap', userGetEarthquakes);
+      return {
+        status: true,
+        message:"lấy danh sách Earthquakes thành công",
+        data: userGetEarthquakes,
+      };
+    } catch (err) {
+      return {
+        status: false,
+        message:"lấy danh sách Earthquakes thất bại",
+        data: null,
+      };
+    }
+
+
+  }
+    //get by category
+  async userGetEarthquakesbyCategoryId(){
+    try {
+      let getCategorybyId= await this.earthquakeRepository.find( {where:{block:false},relations: ['categorys']});
+
+
+
+      let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false},relations: ['categorys']});
+      console.log('getAllMap', userGetEarthquakes);
+      return {
+        status: true,
+        message:"lấy danh sách Earthquakes thành công",
+        data: userGetEarthquakes,
+      };
+    } catch (err) {
+      return {
+        status: false,
+        message:"lấy danh sách Earthquakes thất bại",
+        data: null,
+      };
+    }
+
+
   }
 }

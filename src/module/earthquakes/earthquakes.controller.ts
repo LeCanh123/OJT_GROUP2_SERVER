@@ -86,4 +86,47 @@ export class EarthquakesController {
       throw new HttpException('Controller error', HttpStatus.BAD_REQUEST);
     }
   }
+
+
+
+  //user
+  //get all
+  @Get("/user/get")
+  async userGetEarthquakes(
+    @Res() res: Response,
+  ) {
+    try {
+      let result= await this.earthquakesService.userGetEarthquakes();
+      if(result.status){
+        return res.status(200).json(result);
+      }
+      return res.status(201).json(result);
+    } catch (error) {
+      return res.status(201).json({ 
+        status:false,
+        message:"lấy danh sách Earthquakes thất bại"
+      });
+    }
+  }
+
+
+  //get by id
+  @Get("/user/getbyid")
+  async userGetbyCategoryId(
+    @Res() res: Response,
+    @Body() data
+  ) {
+    try {
+      let result= await this.earthquakesService.userGetEarthquakes();
+      if(result.status){
+        return res.status(200).json(result);
+      }
+      return res.status(201).json(result);
+    } catch (error) {
+      return res.status(201).json({ 
+        status:false,
+        message:"lấy danh sách Earthquakes thất bại"
+      });
+    }
+  }
 }
