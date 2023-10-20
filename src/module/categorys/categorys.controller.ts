@@ -29,6 +29,8 @@ export class CategorysController {
     @Body() data: CreateCategoryDto,
     @UploadedFiles() icon: Array<Express.Multer.File>,
   ) {
+    console.log("icon",icon);
+    
     const originalFileName = icon?.[0]?.originalname;
     console.log('originalFileName', icon);
     const fileExtension = path.extname(originalFileName); // Trích xuất đuôi tệp tin
@@ -43,7 +45,7 @@ export class CategorysController {
         icon[0],
         'image',
         fs.readFileSync(newFilePath),
-      );
+      );  
     }
     //xoá sau khi upload
     fs.unlinkSync(newFilePath);

@@ -9,6 +9,7 @@ import { AuthModule } from './services/auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
 import { User } from './module/users/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MessageModule } from './module/message/message.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     CategorysModule,
     EarthquakesModule,
     AuthModule,
+    MessageModule,
     PassportModule.register({ session: true }),
     TypeOrmModule.forRoot({
       type: 'mysql',
