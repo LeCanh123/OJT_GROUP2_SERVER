@@ -172,7 +172,7 @@ export class EarthquakesService {
   async userGetEarthquakes(){
     try {
       let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false},relations: ['categorys']});
-      console.log('getAllMap', userGetEarthquakes);
+      // console.log('getAllMap', userGetEarthquakes);
       return {
         status: true,
         message:"lấy danh sách Earthquakes thành công",
@@ -189,14 +189,17 @@ export class EarthquakesService {
 
   }
     //get by category
-  async userGetEarthquakesbyCategoryId(){
+  async userGetEarthquakesbyCategoryId(data){
     try {
-      let getCategorybyId= await this.earthquakeRepository.find( {where:{block:false},relations: ['categorys']});
+      //
+      let getCategorybyId= await this.earthquakeRepository.find( {
+        where:{block:false,categorys:{id:data.categoryId}},
+        relations: ['categorys']});
 
 
 
       let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false},relations: ['categorys']});
-      console.log('getAllMap', userGetEarthquakes);
+      // console.log('getAllMap', userGetEarthquakes);
       return {
         status: true,
         message:"lấy danh sách Earthquakes thành công",

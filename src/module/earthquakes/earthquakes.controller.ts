@@ -111,13 +111,15 @@ export class EarthquakesController {
 
 
   //get by id
-  @Get("/user/getbyid")
+  @Post("/user/getbyid") 
   async userGetbyCategoryId(
     @Res() res: Response,
     @Body() data
   ) {
     try {
-      let result= await this.earthquakesService.userGetEarthquakes();
+      console.log("data",data);
+      
+      let result= await this.earthquakesService.userGetEarthquakesbyCategoryId(data)
       if(result.status){
         return res.status(200).json(result);
       }
@@ -125,7 +127,7 @@ export class EarthquakesController {
     } catch (error) {
       return res.status(201).json({ 
         status:false,
-        message:"lấy danh sách Earthquakes thất bại"
+        message:"lấy danh sách Earthquakes theo id thất bại"
       });
     }
   }
