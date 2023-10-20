@@ -10,76 +10,76 @@ export class EarthquakesService {
     @Inject('EARTHQUAKES_REPOSITORY')
     private earthquakeRepository: Repository<Earthquake>,
   ) {}
-  //Thêm 
-  async create(data:any) {
-    console.log("data",data);
-    try{
+  //Thêm
+  async create(data: any) {
+    console.log('data', data);
+    try {
       const currentTime = new Date();
       const data1: any = {
         name: data.name,
-        lat:data.lat,
-        lng:data.lng,
-        size:data.size,
-        level:data.level,
+        lat: data.lat,
+        lng: data.lng,
+        size: data.size,
+        level: data.level,
         place: data.place,
-        categorys:{id:data.CategoryId},
-        time:currentTime
-        }
-      const categorys=await this.earthquakeRepository.save(data);
-      console.log("ok");   
-    } 
-    catch(err){ 
-      console.log("err",err); 
+        categorys: { id: data.CategoryId },
+        time: currentTime,
+      };
+      const categorys = await this.earthquakeRepository.save(data);
+      console.log('ok');
+    } catch (err) {
+      console.log('err', err);
     }
     return {
-      status:true,
-      data:data,
-      message:"Thêm thành công "
-    }
+      status: true,
+      data: data,
+      message: 'Thêm thành công ',
+    };
   }
-   // Phân trang
-  async findAllPage(page:number,limit:number){
+
+  // Phân trang
+  async findAllPage(page: number, limit: number) {
     try {
-      const skip =(page-1)*limit;
-      const [earthquake,total]=await this.earthquakeRepository.findAndCount({
+      const skip = (page - 1) * limit;
+      const [earthquake, total] = await this.earthquakeRepository.findAndCount({
         skip,
-        take:limit,
-      })
-      const totalPage=Math.ceil(total/limit);
+        take: limit,
+      });
+      const totalPage = Math.ceil(total / limit);
       return {
-        data:earthquake,
+        data: earthquake,
         page,
         limit,
         totalPage,
-        message:"Get ok"
-      }
+        message: 'Get ok',
+      };
     } catch (error) {
       return {
-        success:false,
-        message:"Model err"
-      }      
+        success: false,
+        message: 'Model err',
+      };
     }
-   }
+  }
+
   //Lấy tất cả dang sách
   async getAll() {
-    try{
-
-      let getAllMap= await this.earthquakeRepository.find()
-      console.log("getAllMap",getAllMap);  
+    try {
+      let getAllMap = await this.earthquakeRepository.find();
+      console.log('getAllMap', getAllMap);
       return {
-        status:true,
-        data:getAllMap
-      }
-    }
-    catch(err){
-console.log("err",err);
-
+        status: true,
+        data: getAllMap,
+      };
+    } catch (err) {
+      console.log('err', err);
     }
     // return `This action removes a # map`;
   }
-   //lấy thông báo cho người dùng
-   async getNotificate(data:any) {
+
+  //lấy thông báo cho người dùng
+  async getNotificate(data: any) {
     const targetDate = new Date('2023-10-12T03:51:34.000Z');
+<<<<<<< HEAD
     const query = this.earthquakeRepository.createQueryBuilder("Map")
   .where('Map.time > :targetDate', { targetDate })
   .getMany();
@@ -110,52 +110,81 @@ query.then(results => {
         where:{
           name:ILike(`%${searchByName}%`)
         }
+=======
+    const query = this.earthquakeRepository
+      .createQueryBuilder('Map')
+      .where('Map.time > :targetDate', { targetDate })
+      .getMany();
+    query
+      .then((results) => {
+        console.log('results', results); // Kết quả đã lọc được
+>>>>>>> develop
       })
+      .catch((error) => {
+        console.error(error); // Xử lý lỗi nếu có
+      });
+  }
+
+  //Lấy theo id
+  async findOne(id: string) {
+    log('id', id);
+    try {
+      let earthquake = await this.earthquakeRepository.findOne({
+        where: { id: id },
+        relations: { categorys: true },
+      });
+      console.log('ee', earthquake);
       return {
-        data:earthquake,
-        message:"Search OK!"
-      }
+        data: earthquake,
+        message: 'Get Ok',
+      };
     } catch (error) {
-      return [false,"Model err",null]
+      return [false, 'Model Err', null];
     }
   }
-//Sửa
-  async update(id:string,updateCategoryDto:UpdateEarthquakeDto) {
-   try {
-    let earthquake=await this.earthquakeRepository.findOne({
-      where:{
-        id:id,
-      },
-    })
-    if (!earthquake) {
+
+  //Tìm kiếm
+  async searchByName(searchByName: string) {
+    try {
+      let earthquake = this.earthquakeRepository.find({
+        where: {
+          name: ILike(`%${searchByName}`),
+        },
+      });
       return {
-      success:false,
-      message:"Không tìm thấy"
+        data: earthquake,
+        message: 'Search OK!',
+      };
+    } catch (error) {
+      return [false, 'Model err', null];
+    }
+  }
+
+  //Sửa
+  async update(id: string, updateCategoryDto: UpdateEarthquakeDto) {
+    try {
+      let earthquake = await this.earthquakeRepository.findOne({
+        where: {
+          id: id,
+        },
+      });
+      if (!earthquake) {
+        return {
+          success: false,
+          message: 'Không tìm thấy',
+        };
       }
+      let updatedEarthquake = Object.assign(earthquake, updateCategoryDto);
+      return {
+        success: true,
+        message: 'Cập nhập thành công',
+        data: updatedEarthquake,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Lỗi cập nhập',
+      };
     }
-    let updatedEarthquake=Object.assign(earthquake,updateCategoryDto);
-    return{
-      success:true,
-      message:"Cập nhập thành công",
-      data:updatedEarthquake
-    }
-   } catch (error) {
-    return {
-      success:false,
-      message:"Lỗi cập nhập"
-    }
-   }
   }
-
-  remove(data) {
-    return `This action removes a # map`;
-  }
-
-
-
-
- 
-
-
-
 }

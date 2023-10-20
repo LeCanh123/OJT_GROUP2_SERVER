@@ -19,13 +19,14 @@ import * as fs from 'fs';
 import { Response } from 'express';
 
 import { uploadFileToStorage } from 'src/services/meobase';
+import { CreateCategoryDto } from './dto/create-category.dto';
 @Controller('categorys')
 export class CategorysController {
   constructor(private readonly categorysService: CategorysService) {}
   //Thêm
   @Post('')
   async create(
-    @Body() data,
+    @Body() data: CreateCategoryDto,
     @UploadedFiles() icon: Array<Express.Multer.File>,
   ) {
     console.log("icon",icon);
@@ -36,6 +37,7 @@ export class CategorysController {
     const uploadedFilePath = icon?.[0]?.path;
     const newFilePath = uploadedFilePath + fileExtension; // Đường dẫn mới với đuôi tệp tin đúng
     fs.renameSync(uploadedFilePath, newFilePath); // Đổi tên tệp tin
+
     //upload
     let avatarProcess;
     if (icon?.[0]) {
@@ -54,7 +56,7 @@ export class CategorysController {
     return createCategoryResult;
   }
 
-  //Lấy ,tìm kiếm ,phân trang 
+  //Lấy ,tìm kiếm ,phân trang
   @Get()
   async findAll(
     @Res() res: Response,
@@ -75,24 +77,25 @@ export class CategorysController {
       throw new HttpException('Lỗi controller', HttpStatus.BAD_REQUEST);
     }
   }
+
   @Get()
-  async GetAll(){
+  async GetAll() {
     try {
-      let category= await this.categorysService.findAll()
+      let category = await this.categorysService.findAll();
       return {
-       category
-      }
+        category,
+      };
     } catch (error) {
-      console.log("err",error);
-      
-      
+      console.log('err', error);
     }
   }
-//Lấy theo id
+
+  //Lấy theo id
   @Get(':id')
- async findOne(@Param('id') id: string, @Res() res: Response) {
+  async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
-      let result= await this.categorysService.findOne(id)
+      let result = await this.categorysService.findOne(id);
+      console.log('err');
       return res.status(HttpStatus.OK).json(result);
     } catch (error) {
       console.log('err', error);
@@ -101,7 +104,7 @@ export class CategorysController {
   }
   //Sửa
   @Patch(':id')
- async update(
+  async update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
     @Res() res: Response,
@@ -114,7 +117,7 @@ export class CategorysController {
       throw new HttpException('Controller err ', HttpStatus.BAD_REQUEST);
     }
   }
-//Xóa
+  //Xóa
   @Delete(':id')
   remove(@Param('id') id: string, @Res() res: Response) {
     try {
@@ -124,4 +127,3 @@ export class CategorysController {
     }
   }
 }
-
