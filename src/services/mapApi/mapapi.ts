@@ -20,6 +20,4 @@ conver:()=>{
     console.log(e.response.data.error_message);
   });
 }
-
-
 }

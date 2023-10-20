@@ -1,54 +1,89 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+  Query,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { EarthquakesService } from './earthquakes.service';
 import { CreateEarthquakeDto } from './dto/create-earthquake.dto';
 import { UpdateEarthquakeDto } from './dto/update-earthquake.dto';
+import { Response } from 'express';
 
 @Controller('earthquakes')
 export class EarthquakesController {
   constructor(private readonly earthquakesService: EarthquakesService) {}
 
-   //tạo
-   @Post("/admin/create")
-   create(@Body() data) {
-     console.log("data");
-     
-     // {
-     //   "locationx":"",	
-     //   "locationy":"",	
-     //   "type":""	,
-     //   "name":"",
-     //   "block":"null",
-     //  "size":123
-     // }
-     return this.earthquakesService.create(data);
-   }
- 
-   //sửa
-   @Post("update/:id")
-   update(@Body() data) {
-     return this.earthquakesService.update(data);
-   }
- 
-   //xoá
-   @Post("delete/:id")
-   delete(@Body() data) {
-     return this.earthquakesService.remove(data);
-   }
- 
-   //getall
-   @Get()
-   async getAll() {
-     console.log("vaof get aall");
-     let getallResult=await this.earthquakesService.getAll();
-     return getallResult
-   }
- 
- 
-   @Get("/test")
-   async test() {
-     let getallResult=await this.earthquakesService.getNotificate("");
-     return getallResult
-   }
- 
- }
- 
+  //tạo
+  @Post()
+  async create(@Body() data, @Res() res: Response) {
+    try {
+      return res
+        .status(HttpStatus.OK)
+        .json(await this.earthquakesService.create(data));
+    } catch (error) {
+      throw new HttpException('Controller err ', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  //Lấy ,tìm kiếm ,phân trang
+  @Get()
+  async findAll(
+    @Res() res: Response,
+    @Query('q') q: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    try {
+      const skip = (page - 1) * limit;
+      let result;
+      if (q != undefined) {
+        result = await this.earthquakesService.searchByName(q);
+      } else {
+        result = await this.earthquakesService.findAllPage(page, limit);
+      }
+      return res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      throw new HttpException('Controller err ', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  //Lấy theo id
+  @Get(':id')
+  async findOne(@Param('id') id: string, @Res() res: Response) {
+    try {
+      let result = await this.earthquakesService.findOne(id);
+      return res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      throw new HttpException('Controller err', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Get('/test')
+  async test() {
+    let getallResult = await this.earthquakesService.getNotificate('');
+    return getallResult;
+  }
+
+  //sửa
+  @Patch(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateEarthquake: UpdateEarthquakeDto,
+    @Res() res: Response,
+  ) {
+    try {
+      res
+        .status(HttpStatus.OK)
+        .json(await this.earthquakesService.update(id, updateEarthquake));
+    } catch (error) {
+      throw new HttpException('Controller error', HttpStatus.BAD_REQUEST);
+    }
+  }
+}

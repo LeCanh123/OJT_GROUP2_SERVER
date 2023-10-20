@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 
 @Injectable()
@@ -10,85 +10,164 @@ export class CategorysService {
     @Inject('CATEGORYS_REPOSITORY')
     private categoryRepository: Repository<Category>,
   ) {}
+  //Thêm
+  async create(data: any) {
+    console.log('data', data);
+    const data1 = {
+      title: data.title,
+      block: data.block,
+      icon: data.icon,
+    };
+    console.log('data1', data1);
 
-
-  async create(data) {
-    console.log("data",data);
-    let data1={
-      type:data.type,
-      block:"null",
-      image:data.image 
+    try {
+      const addCategoryResult = await this.categoryRepository.save(data1);
+      return {
+        status: true,
+        message: 'Thêm thành công',
+        data: addCategoryResult,
+      };
+    } catch (err) {
+      console.log('err Service', err);
+      return {
+        status: false,
+        message: 'Thêm thành công',
+        data: null,
+      };
     }
-    try{
-
-      let addCategoryResult=await this.categoryRepository.save(data1);
-
-return {
-  status:true,
-  message:"Thêm category thành công"
-}
+  }
+  //Lấy tất cả danh sách
+  async findAll() {
+    try {
+      const category = await this.categoryRepository.find();
+      return {
+        data: category,
+        message: 'Get ok',
+      };
+    } catch (error) {
+      return [false, 'Model err', null];
     }
-    catch(err){
-
+  }
+  // Phân trang
+  async findAllPage(page: number, limit: number) {
+    try {
+      const skip = (page - 1) * limit;
+      const [category, total] = await this.categoryRepository.findAndCount({
+        skip,
+        take: limit,
+      });
+      const totalPage = Math.ceil(total / limit);
+      return {
+        data: category,
+        page,
+        limit,
+        total,
+        totalPage,
+        message: 'Get ok',
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Model err',
+      };
     }
   }
 
-
-  async getall(data) {
-    console.log("data",data);
-    
-    try{
-
-      let getCategoryResult=await this.categoryRepository.find({where:{block:"null"}});
-
-    return {
-      status:true,
-      message:"Lấy category thành công",
-      data:getCategoryResult
-    }
-    }
-    catch(err){
-
-    }
-  }
-
-
-  async delete(data) {
-    console.log("data",data);
-    
-    try{
-
-      let deleteCategoryResult=await this.categoryRepository
-                                      .createQueryBuilder()
-                                      .update(Category)
-                                      .set({ block: "true"})
-                                      .where("id = :id", { id: data.id })
-                                      .execute()
-
-    return {
-      status:true,
-      message:"Xoá category thành công",
-      // data:getCategoryResult
-    }
-    }
-    catch(err){
-
+  //Lấy theo id
+  async findOne(id: string) {
+    try {
+      const category = await this.categoryRepository.findOne({
+        where: {
+          id: id,
+        },
+        relations: {
+          earthquake: true,
+        },
+      });
+      return {
+        data: category,
+        message: 'Get ok',
+      };
+    } catch (error) {
+      console.log('err', error);
+      return [false, 'Model err', null];
     }
   }
-
-  findAll() {
-    return `This action returns all categorys`;
+  //Tìm kiếm
+  async searchByTitle(searchByTitle: string) {
+    try {
+      const category = await this.categoryRepository.find({
+        where: {
+          title: ILike(`%${searchByTitle}%`),
+        },
+      });
+      return {
+        data: category,
+        message: 'Search ok!',
+      };
+    } catch (error) {
+      return [false, 'Model err ', null];
+    }
   }
+  //Sửa
+  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+    try {
+      const category = await this.categoryRepository.findOne({
+        where: {
+          id: id,
+        },
+      });
+      if (!category) {
+        return {
+          success: false,
+          message: 'Không tìm thấy',
+        };
+      }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+      const updatedCategory = Object.assign(category, updateCategoryDto);
+      const isTrueSet = String(updatedCategory.block).toLowerCase() === 'true';
+      updatedCategory.block = isTrueSet;
+      await this.categoryRepository.save(updatedCategory);
+
+      return {
+        success: true,
+        message: 'Cập nhập thành công',
+        data: updatedCategory,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Lỗi cập nhập',
+      };
+    }
   }
-
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  //Xóa
+  async remove(id: string) {
+    try {
+      const category = await this.categoryRepository.findOne({
+        where: {
+          id: id,
+        },
+        relations: {
+          earthquake: true,
+        },
+      });
+      if (!category) {
+        return {
+          success: false,
+          message: 'Category not found',
+        };
+      }
+      await this.categoryRepository.remove(category);
+      return {
+        success: true,
+        message: 'Category removed successfully',
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Error removing category',
+      };
+    }
   }
 }
