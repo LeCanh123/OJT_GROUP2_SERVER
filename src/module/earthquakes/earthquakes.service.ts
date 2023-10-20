@@ -108,7 +108,7 @@ query.then(results => {
     try {
       let earthquake=this.earthquakeRepository.find({
         where:{
-          name:ILike(`%${searchByName}`)
+          name:ILike(`%${searchByName}%`)
         }
       })
       return {
