@@ -19,7 +19,6 @@ export class MessageController {
   ) {
     try {
       let file=files?.[0]?.originalname;
-      console.log("files",files);
       let fileExtension=path.extname(file)
       let uploadedFilePath=files?.[0]?.path
       let newFilePath=uploadedFilePath+fileExtension;
