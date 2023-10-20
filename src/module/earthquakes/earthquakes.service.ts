@@ -79,7 +79,6 @@ export class EarthquakesService {
   //lấy thông báo cho người dùng
   async getNotificate(data: any) {
     const targetDate = new Date('2023-10-12T03:51:34.000Z');
-<<<<<<< HEAD
     const query = this.earthquakeRepository.createQueryBuilder("Map")
   .where('Map.time > :targetDate', { targetDate })
   .getMany();
@@ -89,6 +88,40 @@ query.then(results => {
   console.error(error); // Xử lý lỗi nếu có
 });
   }
+  // //Lấy theo id
+  // async findOne(id: string) {
+  //   log('id', id);
+  //   try {
+  //     let earthquake = await this.earthquakeRepository.findOne({
+  //       where: { id: id },
+  //       relations: { categorys: true },
+  //     });
+  //     console.log('ee', earthquake);
+  //     return {
+  //       data: earthquake,
+  //       message: 'Get Ok',
+  //     };
+  //   } catch (error) {
+  //     return [false, 'Model Err', null];
+  //   }
+  // }
+
+  // //Tìm kiếm
+  // async searchByName(searchByName: string) {
+  //   try {
+  //     let earthquake = this.earthquakeRepository.find({
+  //       where: {
+  //         name: ILike(`%${searchByName}`),
+  //       },
+  //     });
+  //     return {
+  //       data: earthquake,
+  //       message: 'Search OK!',
+  //     };
+  //   } catch (error) {
+  //     return [false, 'Model err', null];
+  //   }
+  // }
   //Lấy theo id
   async findOne(id:string){
     log("id",id)
@@ -104,45 +137,6 @@ query.then(results => {
   }
   }
   //Tìm kiếm 
- async searchByName(searchByName:string){
-    try {
-      let earthquake=this.earthquakeRepository.find({
-        where:{
-          name:ILike(`%${searchByName}%`)
-        }
-=======
-    const query = this.earthquakeRepository
-      .createQueryBuilder('Map')
-      .where('Map.time > :targetDate', { targetDate })
-      .getMany();
-    query
-      .then((results) => {
-        console.log('results', results); // Kết quả đã lọc được
->>>>>>> develop
-      })
-      .catch((error) => {
-        console.error(error); // Xử lý lỗi nếu có
-      });
-  }
-
-  //Lấy theo id
-  async findOne(id: string) {
-    log('id', id);
-    try {
-      let earthquake = await this.earthquakeRepository.findOne({
-        where: { id: id },
-        relations: { categorys: true },
-      });
-      console.log('ee', earthquake);
-      return {
-        data: earthquake,
-        message: 'Get Ok',
-      };
-    } catch (error) {
-      return [false, 'Model Err', null];
-    }
-  }
-
   //Tìm kiếm
   async searchByName(searchByName: string) {
     try {
@@ -159,6 +153,7 @@ query.then(results => {
       return [false, 'Model err', null];
     }
   }
+
 
   //Sửa
   async update(id: string, updateCategoryDto: UpdateEarthquakeDto) {
