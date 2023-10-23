@@ -57,10 +57,10 @@ export class MessageService {
     try {
       let message= await this.messages.find({
         where:{
-          message:ILike(`%${searchByMessage}%`)
+          title:ILike(`%${searchByMessage}%`)
         }
       })
-      console.log("message",message);
+
       return{
         status:true,
         message:"Search ok",
@@ -81,7 +81,29 @@ export class MessageService {
     return `This action updates a #${id} message`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} message`;
+  async remove(id: number) {
+    try {
+      const message=await this.messages.findOne({
+        where:{
+          id:id,
+        }
+      })
+      
+      if (!message) {
+        return [false,"Model err",null]
+      }
+      console.log("message",message);
+      await this.messages.remove(message);
+      return {
+        status:true,
+        message:"Xóa thành công ",
+      }
+    } catch (error) {
+     return {
+      status:false,
+      message:"Xóa thất bại "
+     }
+      
+    }
   }
 }

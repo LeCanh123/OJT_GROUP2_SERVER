@@ -2,9 +2,11 @@ import { Category } from 'src/module/categorys/entities/category.entity';
 import {
   BeforeInsert,
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -33,19 +35,7 @@ export class Earthquake {
   @Column({ type: 'timestamp' }) //thời gian bắt đầu sảy ra động đất
   time_start: Date;
 
-  @Column({
-    default: Date.now(),
-  }) //Thời gian tạo trên hệ thống
-  created_at: string;
 
-  @BeforeInsert()
-  setCreateTime() {
-    this.created_at = String(Date.now());
-  }
-
-  @Column({
-    nullable: true,
-  })
   updated_at: string;
 
   @Column({
