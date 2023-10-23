@@ -113,6 +113,7 @@ export class EarthquakesController {
   }
 
 
+
   //get earthquake by category id
   @Post("/user/getbyid") 
   async userGetbyCategoryId(
@@ -144,7 +145,9 @@ export class EarthquakesController {
     try {
       console.log("data",data);
       
-      let result= await this.earthquakesService.userGetEarthquakesbyCategoryId(data)
+      let result:any= await this.earthquakesService.userGetNotification(data)
+      console.log("result",result);
+      
       if(result.status){
         return res.status(200).json(result);
       }
@@ -158,5 +161,27 @@ export class EarthquakesController {
   }
 
   //thay đổi thời gian nhận thông báo
-  
+    @Post("/user/changetime")
+    async userChangestime(
+      @Res() res: Response,
+      @Body() data
+    ) {
+      console.log("vào userChangestime controller");
+      
+      try {
+        let result:any= await this.earthquakesService.changeTimeNotification("")
+        if(result.status){
+          return res.status(200).json(result);
+        }
+        return res.status(201).json(result);
+      } catch (error) {
+        return res.status(201).json({ 
+          status:false,
+          message:"lấy danh sách Earthquakes thất bại"
+        });
+      }
+    }
+
+
+
 }

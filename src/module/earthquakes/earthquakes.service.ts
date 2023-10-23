@@ -7,6 +7,8 @@ import { log } from 'console';
 import { Category } from '../categorys/entities/category.entity';
 import { User } from '../users/entities/user.entity';
 import MailService from 'src/services/mail';
+import jwt from 'src/services/jwt';
+
 
 @Injectable()
 export class EarthquakesService {
@@ -207,6 +209,17 @@ query.then(results => {
       };
     }
   }
+
+
+
+
+
+
+
+
+
+
+
   //phần dành cho user
   //user userGetEarthquakes
   //get all
@@ -265,21 +278,40 @@ query.then(results => {
   //nhận thông báo
   async userGetNotification(data){
     const targetDate = new Date('2023-10-12T03:51:34.000Z');
-    const query = this.earthquakeRepository.createQueryBuilder("Map")
-    .where('Map.time > :targetDate', { targetDate })
+    const query = this.earthquakeRepository.createQueryBuilder("Earthquake")
+    .where('Earthquake.time_notification > :targetDate', { targetDate })
     .getMany();
-    query.then(results => {
-    console.log("results",results); // Kết quả đã lọc được
+
+    return query.then(results => {
+    // console.log("results",results); // Kết quả đã lọc được,
+    return {
+      status:true,
+      message:"Lấy thông báo thành công",
+      data:results
+    }
     }).catch(error => {
-    console.error(error); // Xử lý lỗi nếu có
+      return {
+        status:false,
+        message:"Lấy thông báo thất bại",
+        data:null
+      }
+    // console.error(error); // Xử lý lỗi nếu có
     });
+
+    
     
   }
 
   //thay đổi thời gian user xem thông báo
   async changeTimeNotification(data){
     //thay đổi thời gian đọc thông báo của user
+    console.log("vào changeTimeNotification");
+    
+    //giải nén
+    // const unpack= await jwt.verifyToken(data.token);
+    // if(!unpack){
 
+    // }
       try{
         const currentTime = new Date();
         let changeTimeResult=await this.userRepository
