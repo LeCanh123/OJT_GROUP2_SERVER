@@ -5,6 +5,7 @@ import { ILike, Repository } from 'typeorm';
 import { Earthquake } from './entities/earthquake.entity';
 import { log } from 'console';
 import { Category } from '../categorys/entities/category.entity';
+import { User } from '../users/entities/user.entity';
 @Injectable()
 export class EarthquakesService {
   constructor(
@@ -12,7 +13,11 @@ export class EarthquakesService {
     private earthquakeRepository: Repository<Earthquake>,
     @Inject('CATEGORYS_REPOSITORY')
     private categoryRepository: Repository<Category>,
+    @Inject('USERRPS_REPOSITORY')
+    private userRepository: Repository<User>,
   ) {}
+
+  // Admin
   //Thêm
   async create(data: any) {
     console.log('data', data);
@@ -185,4 +190,67 @@ query.then(results => {
       };
     }
   }
+
+
+
+
+
+
+  //phần dành cho user
+    //user userGetEarthquakes
+    //get all
+    async userGetEarthquakes(){
+      try {
+        let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false},relations: ['categorys']});
+        // console.log('getAllMap', userGetEarthquakes);
+        return {
+          status: true,
+          message:"lấy danh sách Earthquakes thành công",
+          data: userGetEarthquakes,
+        };
+      } catch (err) {
+        return {
+          status: false,
+          message:"lấy danh sách Earthquakes thất bại",
+          data: null,
+        };
+      }
+  
+  
+    }
+      //get by category
+    async userGetEarthquakesbyCategoryId(data){
+      console.log("vào by category",data);
+      
+      try {
+        //
+        let getCategorybyId= await this.earthquakeRepository.find( {
+          where:{block:false,categorys:{id:data.categoryId}},
+          relations: ['categorys']});
+  
+  
+  
+        let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false,categorys:{id:data.categoryId}},relations: ['categorys']});
+        // console.log('getAllMap', userGetEarthquakes);
+        return {
+          status: true,
+          message:"lấy danh sách Earthquakes thành công",
+          data: userGetEarthquakes,
+        };
+      } catch (err) {
+        return {
+          status: false,
+          message:"lấy danh sách Earthquakes thất bại",
+          data: null,
+        };
+      } 
+  
+  
+    }
+  
+    async userGetNotification(data){
+  
+      
+    }
+
 }
