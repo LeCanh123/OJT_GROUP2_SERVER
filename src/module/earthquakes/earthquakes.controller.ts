@@ -131,4 +131,26 @@ export class EarthquakesController {
       });
     }
   }
+
+  //
+  @Post("/user/getnotification") 
+  async userGetNotification(
+    @Res() res: Response,
+    @Body() data
+  ) {
+    try {
+      console.log("data",data);
+      
+      let result= await this.earthquakesService.userGetEarthquakesbyCategoryId(data)
+      if(result.status){
+        return res.status(200).json(result);
+      }
+      return res.status(201).json(result);
+    } catch (error) {
+      return res.status(201).json({ 
+        status:false,
+        message:"lấy danh sách Earthquakes theo id thất bại"
+      });
+    }
+  }
 }

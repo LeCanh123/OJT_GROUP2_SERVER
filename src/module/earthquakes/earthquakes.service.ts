@@ -217,4 +217,9 @@ export class EarthquakesService {
 
 
   }
+
+  async userGetNotification(data){
+
+    
+  }
 }
