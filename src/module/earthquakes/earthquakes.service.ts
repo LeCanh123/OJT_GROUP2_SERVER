@@ -207,12 +207,6 @@ query.then(results => {
       };
     }
   }
-
-
-
-
-
-
   //phần dành cho user
   //user userGetEarthquakes
   //get all
@@ -302,7 +296,7 @@ query.then(results => {
   }
 
 
-    //gửi email cho user
+  //gửi email cho user
   async sendEmail(data){
     //lấy danh sách trong database
   
