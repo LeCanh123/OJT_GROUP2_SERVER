@@ -224,6 +224,8 @@ query.then(results => {
           data: userGetEarthquakes,
         };
       } catch (err) {
+        console.log("err userGetEarthquakes",err);
+        
         return {
           status: false,
           message:"lấy danh sách Earthquakes thất bại",
@@ -235,7 +237,7 @@ query.then(results => {
     }
       //get by category
     async userGetEarthquakesbyCategoryId(data){
-      console.log("vào by category",data);
+      // console.log("vào by category",data);
       
       try {
         //
@@ -258,7 +260,7 @@ query.then(results => {
           message:"lấy danh sách Earthquakes thất bại",
           data: null,
         };
-      } 
+      }
   
   
     }
