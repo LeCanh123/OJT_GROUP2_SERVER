@@ -15,7 +15,7 @@ export class MessageController {
   constructor(private readonly messageService: MessageService) {}
   @Post()
  async create(@Body()data, createMessageDto: CreateMessageDto ,@Res() res:Response ,
-  @UploadedFiles() files:Array<Express.Multer.File>
+ @UploadedFiles() files:Array<Express.Multer.File>
   ) {
     try {
       let file=files?.[0]?.originalname;
@@ -29,9 +29,10 @@ export class MessageController {
         ...data,
         file:avatarProcess
       })
-      return createMessage
+      return res.status(HttpStatus.OK).json(createMessage)
     } catch (error) {
       console.log("err",error)
+      throw new HttpException("Controller Error",HttpStatus.BAD_REQUEST)
     }
   }
   //Lấy ,tìm kiếm ,phân trang
@@ -63,7 +64,11 @@ export class MessageController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.messageService.remove(+id);
+ async remove(@Param('id') id: number ,@Res() res:Response) {
+    try {
+      return res.status(HttpStatus.OK).json(await this.messageService.remove(id))
+    } catch (error) {
+      throw new HttpException("Controller err ",HttpStatus.BAD_REQUEST )
+    }
   }
 }

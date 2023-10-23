@@ -4,8 +4,9 @@ export class CreateMessageDto {
     @Allow()
     file:string
 
-    @IsNotEmpty()
-    message:string
+    @Allow()
+    title:string
 
-    
+    @IsNotEmpty()
+    message:string 
 }
