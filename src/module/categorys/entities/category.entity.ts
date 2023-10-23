@@ -27,9 +27,7 @@ export class Category {
   icon: string;
 
 
-  @Column({
-    default: Date.now(),
-  })
+ @CreateDateColumn()
   created_at: string;
 
   @BeforeInsert()

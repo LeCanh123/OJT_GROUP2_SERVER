@@ -35,7 +35,10 @@ export class Earthquake {
   @Column({ type: 'timestamp' }) //thời gian bắt đầu sảy ra động đất
   time_start: Date;
 
-
+  @CreateDateColumn()
+  create_at:string;
+  
+  @UpdateDateColumn()
   updated_at: string;
 
   @Column({
