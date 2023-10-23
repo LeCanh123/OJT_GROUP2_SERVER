@@ -12,7 +12,6 @@ export class CategorysService {
   ) {}
   //Thêm
   async create(data: any) {
-    console.log('data', data);
     const data1 = {
       title: data.title,
       block: data.block,
@@ -43,6 +42,7 @@ export class CategorysService {
       return {
         data: category,
         message: 'Get ok',
+        status: true,
       };
     } catch (error) {
       return [false, 'Model err', null];
@@ -138,35 +138,6 @@ export class CategorysService {
       return {
         success: false,
         message: 'Lỗi cập nhập',
-      };
-    }
-  }
-  //Xóa
-  async remove(id: string) {
-    try {
-      const category = await this.categoryRepository.findOne({
-        where: {
-          id: id,
-        },
-        relations: {
-          earthquake: true,
-        },
-      });
-      if (!category) {
-        return {
-          success: false,
-          message: 'Category not found',
-        };
-      }
-      await this.categoryRepository.remove(category);
-      return {
-        success: true,
-        message: 'Category removed successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: 'Error removing category',
       };
     }
   }

@@ -12,8 +12,8 @@ export class Category {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ unique: false })
-  title!: string;
+  @Column({ unique: true })
+  title: string;
 
   @Column({ default: false })
   block: boolean;
@@ -24,12 +24,15 @@ export class Category {
   })
   icon: string;
 
-  @Column({ nullable: true })
+  @Column({
+    default: Date.now(),
+  })
   created_at: string;
 
   @BeforeInsert()
   setCreateTime() {
-    this.created_at = String(Date.now());
+    const currentTime = new Date().toISOString();
+    this.created_at = currentTime;
   }
 
   @Column({
@@ -39,5 +42,5 @@ export class Category {
 
   // 1 category có nhiều Earthquake
   @OneToMany(() => Earthquake, (earthquake) => earthquake.categorys)
-  earthquake!: Earthquake[];
+  earthquake: Earthquake[];
 }
