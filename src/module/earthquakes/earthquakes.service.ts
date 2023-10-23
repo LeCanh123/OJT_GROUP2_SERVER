@@ -190,6 +190,8 @@ export class EarthquakesService {
   }
     //get by category
   async userGetEarthquakesbyCategoryId(data){
+    console.log("vào by category",data);
+    
     try {
       //
       let getCategorybyId= await this.earthquakeRepository.find( {
@@ -198,7 +200,7 @@ export class EarthquakesService {
 
 
 
-      let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false},relations: ['categorys']});
+      let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false,categorys:{id:data.categoryId}},relations: ['categorys']});
       // console.log('getAllMap', userGetEarthquakes);
       return {
         status: true,
@@ -211,7 +213,7 @@ export class EarthquakesService {
         message:"lấy danh sách Earthquakes thất bại",
         data: null,
       };
-    }
+    } 
 
 
   }
