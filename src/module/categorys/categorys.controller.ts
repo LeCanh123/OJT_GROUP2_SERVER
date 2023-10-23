@@ -26,7 +26,7 @@ export class CategorysController {
   //Thêm
   @Post('')
   async create(
-    @Body() data: CreateCategoryDto,
+    @Body() data: any,
     @UploadedFiles() icon: Array<Express.Multer.File>,
   ) {
     console.log("icon",icon);
@@ -56,6 +56,16 @@ export class CategorysController {
     return createCategoryResult;
   }
 
+  @Get()
+  async GetAll(@Res() res: Response) {
+    try {
+      let category = await this.categorysService.findAll();
+      return res.status(HttpStatus.OK).json(category);
+    } catch (error) {
+      console.log('err', error);
+    }
+  }
+
   //Lấy ,tìm kiếm ,phân trang
   @Get()
   async findAll(
@@ -78,24 +88,11 @@ export class CategorysController {
     }
   }
 
-  @Get()
-  async GetAll() {
-    try {
-      let category = await this.categorysService.findAll();
-      return {
-        category,
-      };
-    } catch (error) {
-      console.log('err', error);
-    }
-  }
-
   //Lấy theo id
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       let result = await this.categorysService.findOne(id);
-      console.log('err');
       return res.status(HttpStatus.OK).json(result);
     } catch (error) {
       console.log('err', error);
@@ -115,15 +112,6 @@ export class CategorysController {
         .json(await this.categorysService.update(id, updateCategoryDto));
     } catch (error) {
       throw new HttpException('Controller err ', HttpStatus.BAD_REQUEST);
-    }
-  }
-  //Xóa
-  @Delete(':id')
-  remove(@Param('id') id: string, @Res() res: Response) {
-    try {
-      return res.status(HttpStatus.OK).json(this.categorysService.remove(id));
-    } catch (error) {
-      throw new HttpException('Controller error', HttpStatus.BAD_REQUEST);
     }
   }
 }
