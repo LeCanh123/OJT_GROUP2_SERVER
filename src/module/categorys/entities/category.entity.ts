@@ -41,6 +41,7 @@ export class Category {
   @Column({
     nullable: true,
   })
+
   updated_at: string;
 
   // 1 category có nhiều Earthquake
