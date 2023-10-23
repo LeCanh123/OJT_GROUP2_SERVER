@@ -9,6 +9,9 @@ export class Message {
     file:string
 
     @Column()
+    title:string
+
+    @Column()
     message:string
 
     @CreateDateColumn()

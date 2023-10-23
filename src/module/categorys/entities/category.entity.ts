@@ -2,9 +2,11 @@ import { Earthquake } from 'src/module/earthquakes/entities/earthquake.entity';
 import {
   BeforeInsert,
   Column,
+  CreateDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -24,17 +26,10 @@ export class Category {
   })
   icon: string;
 
-  @Column({ nullable: true })
+  @CreateDateColumn()
   created_at: string;
 
-  @BeforeInsert()
-  setCreateTime() {
-    this.created_at = String(Date.now());
-  }
-
-  @Column({
-    nullable: true,
-  })
+  @UpdateDateColumn()
   updated_at: string;
 
   // 1 category có nhiều Earthquake

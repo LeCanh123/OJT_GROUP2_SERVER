@@ -136,11 +136,10 @@ query.then(results => {
     return [false,"Model Err",null]
   }
   }
-  //Tìm kiếm 
   //Tìm kiếm
   async searchByName(searchByName: string) {
     try {
-      let earthquake = this.earthquakeRepository.find({
+      let earthquake =await this.earthquakeRepository.find({
         where: {
           name: ILike(`%${searchByName}`),
         },
@@ -150,6 +149,8 @@ query.then(results => {
         message: 'Search OK!',
       };
     } catch (error) {
+      console.log("err",error);
+      
       return [false, 'Model err', null];
     }
   }

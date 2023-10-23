@@ -65,7 +65,6 @@ export class CategorysController {
     @Query('limit') limit: number = 10,
   ) {
     try {
-      const skip = (page - 1) * limit;
       let result;
       if (q !== undefined) {
         result = await this.categorysService.searchByTitle(q);
