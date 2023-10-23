@@ -11,8 +11,8 @@ import {
 
 @Entity()
 export class Earthquake {
-  @PrimaryGeneratedColumn('increment')
-  id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column({ unique: true })
   name!: string;
@@ -35,19 +35,23 @@ export class Earthquake {
   @Column({ type: 'timestamp' }) //thời gian bắt đầu sảy ra động đất
   time_start: Date;
 
-  @CreateDateColumn() //Thời gian tạo trên hệ thống
-  created_at: string;
 
-  @UpdateDateColumn()
   updated_at: string;
 
-  @Column({ type: 'timestamp' })
+  @Column({
+    nullable: true,
+  })
   time_notification: Date;
 
   @Column({ default: false })
   block: boolean;
 
+  @Column({
+    nullable: false,
+  })
+  categorysId: string;
+
   //nhiều earthquake liên kết 1 category
   @ManyToOne(() => Category, (category) => category.earthquake)
-  categorys!: Category[];
+  categorys: Category[];
 }

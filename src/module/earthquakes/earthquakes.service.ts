@@ -4,37 +4,38 @@ import { UpdateEarthquakeDto } from './dto/update-earthquake.dto';
 import { ILike, Repository } from 'typeorm';
 import { Earthquake } from './entities/earthquake.entity';
 import { log } from 'console';
+import { Category } from '../categorys/entities/category.entity';
+import { User } from '../users/entities/user.entity';
 @Injectable()
 export class EarthquakesService {
   constructor(
     @Inject('EARTHQUAKES_REPOSITORY')
     private earthquakeRepository: Repository<Earthquake>,
+    @Inject('CATEGORYS_REPOSITORY')
+    private categoryRepository: Repository<Category>,
+    @Inject('USERRPS_REPOSITORY')
+    private userRepository: Repository<User>,
   ) {}
+
+  // Admin
   //Thêm
-  async create(data: any) {
+  async create(data: CreateEarthquakeDto) {
     console.log('data', data);
     try {
-      const currentTime = new Date();
-      const data1: any = {
-        name: data.name,
-        lat: data.lat,
-        lng: data.lng,
-        size: data.size,
-        level: data.level,
-        place: data.place,
-        categorys: { id: data.CategoryId },
-        time: currentTime,
-      };
       const categorys = await this.earthquakeRepository.save(data);
-      console.log('ok');
+      return {
+        status: true,
+        data: categorys,
+        message: 'Thêm mới thiên tai thành công!',
+      };
     } catch (err) {
       console.log('err', err);
+      return {
+        status: false,
+        data: null,
+        message: 'Thêm mới thiên tai thất bại!',
+      };
     }
-    return {
-      status: true,
-      data: data,
-      message: 'Thêm thành công ',
-    };
   }
 
   // Phân trang
@@ -51,30 +52,36 @@ export class EarthquakesService {
         page,
         limit,
         totalPage,
-        message: 'Get ok',
+        message: 'Lấy tất cả danh sách thành công!',
       };
     } catch (error) {
       return {
-        success: false,
-        message: 'Model err',
+        status: false,
+        message: 'Lấy tất cả danh sách thất bại!',
+        data: null,
       };
     }
   }
 
   //Lấy tất cả dang sách
-  async getAll() {
-    try {
-      let getAllMap = await this.earthquakeRepository.find();
-      console.log('getAllMap', getAllMap);
-      return {
-        status: true,
-        data: getAllMap,
-      };
-    } catch (err) {
-      console.log('err', err);
-    }
-    // return `This action removes a # map`;
-  }
+  // async getAll() {
+  //   try {
+  //     let getAllMap = await this.earthquakeRepository.find();
+
+  //     return {
+  //       status: true,
+  //       message: 'Lấy tất cả danh sách thành công!',
+  //       data: getAllMap,
+  //     };
+  //   } catch (err) {
+  //     console.log('err', err);
+  //     return {
+  //       status: false,
+  //       message: 'Lấy tất cả danh sách thất bại!',
+  //       data: null,
+  //     };
+  //   }
+  // }
 
   //lấy thông báo cho người dùng
   async getNotificate(data: any) {
@@ -123,18 +130,29 @@ query.then(results => {
   //   }
   // }
   //Lấy theo id
-  async findOne(id:string){
-    log("id",id)
-  try {
-    let earthquake= await this.earthquakeRepository.findOne({where:{id:id},relations:{categorys:true}})
-    console.log("ee",earthquake);
-    return {
-      data:earthquake,
-      message:"Get Ok"
+
+  async findOne(id: string) {
+    log('id', id);
+    try {
+      let earthquake = await this.earthquakeRepository.findOne({
+        where: { id: id },
+        relations: { categorys: true },
+      });
+      console.log('ee', earthquake);
+      return {
+        status: true,
+        message: 'Lấy danh sách thành công!',
+        data: earthquake,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: 'Lấy danh sách thất bại!',
+        data: null,
+      };
     }
   } catch (error) {
     return [false,"Model Err",null]
-  }
   }
   //Tìm kiếm
   async searchByName(searchByName: string) {
@@ -171,6 +189,10 @@ query.then(results => {
         };
       }
       let updatedEarthquake = Object.assign(earthquake, updateCategoryDto);
+      const isTrueSet =
+        String(updatedEarthquake.block).toLowerCase() === 'true';
+      updatedEarthquake.block = isTrueSet;
+      await this.earthquakeRepository.save(updatedEarthquake);
       return {
         success: true,
         message: 'Cập nhập thành công',
@@ -183,4 +205,69 @@ query.then(results => {
       };
     }
   }
+
+
+
+
+
+
+  //phần dành cho user
+    //user userGetEarthquakes
+    //get all
+    async userGetEarthquakes(){
+      try {
+        let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false},relations: ['categorys']});
+        // console.log('getAllMap', userGetEarthquakes);
+        return {
+          status: true,
+          message:"lấy danh sách Earthquakes thành công",
+          data: userGetEarthquakes,
+        };
+      } catch (err) {
+        console.log("err userGetEarthquakes",err);
+        
+        return {
+          status: false,
+          message:"lấy danh sách Earthquakes thất bại",
+          data: null,
+        };
+      }
+  
+  
+    }
+      //get by category
+    async userGetEarthquakesbyCategoryId(data){
+      // console.log("vào by category",data);
+      
+      try {
+        //
+        let getCategorybyId= await this.earthquakeRepository.find( {
+          where:{block:false,categorys:{id:data.categoryId}},
+          relations: ['categorys']});
+  
+  
+  
+        let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false,categorys:{id:data.categoryId}},relations: ['categorys']});
+        // console.log('getAllMap', userGetEarthquakes);
+        return {
+          status: true,
+          message:"lấy danh sách Earthquakes thành công",
+          data: userGetEarthquakes,
+        };
+      } catch (err) {
+        return {
+          status: false,
+          message:"lấy danh sách Earthquakes thất bại",
+          data: null,
+        };
+      }
+  
+  
+    }
+  
+    async userGetNotification(data){
+  
+      
+    }
+
 }
