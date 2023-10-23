@@ -4,11 +4,14 @@ import { UpdateEarthquakeDto } from './dto/update-earthquake.dto';
 import { ILike, Repository } from 'typeorm';
 import { Earthquake } from './entities/earthquake.entity';
 import { log } from 'console';
+import { Category } from '../categorys/entities/category.entity';
 @Injectable()
 export class EarthquakesService {
   constructor(
     @Inject('EARTHQUAKES_REPOSITORY')
     private earthquakeRepository: Repository<Earthquake>,
+    @Inject('CATEGORYS_REPOSITORY')
+    private categoryRepository: Repository<Category>,
   ) {}
   //Thêm
   async create(data: any) {

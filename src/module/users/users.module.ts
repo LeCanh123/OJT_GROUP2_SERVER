@@ -9,12 +9,10 @@ import { EarthquakesController } from '../earthquakes/earthquakes.controller';
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [UsersController, EarthquakesController],
+  controllers: [UsersController],
   providers: [
     UsersService,
     ...usersProviders,
-    EarthquakesService,
-    ...earthquakeProviders,
   ],
 })
 export class UsersModule {}
