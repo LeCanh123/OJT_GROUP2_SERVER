@@ -6,6 +6,8 @@ import { Earthquake } from './entities/earthquake.entity';
 import { log } from 'console';
 import { Category } from '../categorys/entities/category.entity';
 import { User } from '../users/entities/user.entity';
+import MailService from 'src/services/mail';
+
 @Injectable()
 export class EarthquakesService {
   constructor(
@@ -212,62 +214,129 @@ query.then(results => {
 
 
   //phần dành cho user
-    //user userGetEarthquakes
-    //get all
-    async userGetEarthquakes(){
-      try {
-        let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false},relations: ['categorys']});
-        // console.log('getAllMap', userGetEarthquakes);
-        return {
-          status: true,
-          message:"lấy danh sách Earthquakes thành công",
-          data: userGetEarthquakes,
-        };
-      } catch (err) {
-        console.log("err userGetEarthquakes",err);
-        
-        return {
-          status: false,
-          message:"lấy danh sách Earthquakes thất bại",
-          data: null,
-        };
-      }
-  
-  
-    }
-      //get by category
-    async userGetEarthquakesbyCategoryId(data){
-      // console.log("vào by category",data);
+  //user userGetEarthquakes
+  //get all
+  async userGetEarthquakes(){
+    try {
+      let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false},relations: ['categorys']});
+      // console.log('getAllMap', userGetEarthquakes);
+      return {
+        status: true,
+        message:"lấy danh sách Earthquakes thành công",
+        data: userGetEarthquakes,
+      };
+    } catch (err) {
+      console.log("err userGetEarthquakes",err);
       
-      try {
-        //
-        let getCategorybyId= await this.earthquakeRepository.find( {
-          where:{block:false,categorys:{id:data.categoryId}},
-          relations: ['categorys']});
+      return {
+        status: false,
+        message:"lấy danh sách Earthquakes thất bại",
+        data: null,
+      };
+    }
+
+
+  }
+    //get by category
+  async userGetEarthquakesbyCategoryId(data){
+    // console.log("vào by category",data);
+    
+    try {
+      //
+      let getCategorybyId= await this.earthquakeRepository.find( {
+        where:{block:false,categorys:{id:data.categoryId}},
+        relations: ['categorys']});
+
+
+
+      let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false,categorys:{id:data.categoryId}},relations: ['categorys']});
+      // console.log('getAllMap', userGetEarthquakes);
+      return {
+        status: true,
+        message:"lấy danh sách Earthquakes thành công",
+        data: userGetEarthquakes,
+      };
+    } catch (err) {
+      return {
+        status: false,
+        message:"lấy danh sách Earthquakes thất bại",
+        data: null,
+      };
+    }
+
+
+  }
   
-  
-  
-        let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false,categorys:{id:data.categoryId}},relations: ['categorys']});
-        // console.log('getAllMap', userGetEarthquakes);
-        return {
-          status: true,
-          message:"lấy danh sách Earthquakes thành công",
-          data: userGetEarthquakes,
-        };
-      } catch (err) {
-        return {
-          status: false,
-          message:"lấy danh sách Earthquakes thất bại",
-          data: null,
-        };
+
+  //nhận thông báo
+  async userGetNotification(data){
+    const targetDate = new Date('2023-10-12T03:51:34.000Z');
+    const query = this.earthquakeRepository.createQueryBuilder("Map")
+    .where('Map.time > :targetDate', { targetDate })
+    .getMany();
+    query.then(results => {
+    console.log("results",results); // Kết quả đã lọc được
+    }).catch(error => {
+    console.error(error); // Xử lý lỗi nếu có
+    });
+    
+  }
+
+  //thay đổi thời gian user xem thông báo
+  async changeTimeNotification(data){
+    //thay đổi thời gian đọc thông báo của user
+
+      try{
+        const currentTime = new Date();
+        let changeTimeResult=await this.userRepository
+        .createQueryBuilder()
+        .update(User)
+        .set({ time: currentTime})
+        .where("id = :id", { id: "33378f43-671e-11ee-8359-b07b254d818e" })
+        .execute()
+
       }
+      catch(err){
+
+      }
+  }
+
+
+    //gửi email cho user
+  async sendEmail(data){
+    //lấy danh sách trong database
+  
+    
+  
+  try{
+    let getUserEmail=await this.userRepository.find();
+    console.log("getUserEmail",getUserEmail);
+    getUserEmail.map(async (item:any)=>{
+    //gửi mail
+    await MailService.sendMail({
+      to: item.email,
+      subject: "Thông Báo Thiên Tai",
+      html: `<div>Có thiên tai ở vị trí x y</div>`
+    })
+    return
   
   
+  
+    })
+    return {
+      status:true,
+      message:"Gửi tin nhắn thành công"
     }
   
-    async userGetNotification(data){
-  
-      
+  }
+  catch(err){
+    return {
+      status:false,
+      message:"Gửi tin nhắn thất bại"
     }
+  }
+  
+  
+  }
 
 }

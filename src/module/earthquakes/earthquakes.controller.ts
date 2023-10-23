@@ -91,6 +91,7 @@ export class EarthquakesController {
 
 
   //phần dành cho user
+  //get all earthquake
   @Get("/user/get")
   async userGetEarthquakes(
     @Res() res: Response,
@@ -112,7 +113,7 @@ export class EarthquakesController {
   }
 
 
-  //get by id
+  //get earthquake by category id
   @Post("/user/getbyid") 
   async userGetbyCategoryId(
     @Res() res: Response,
@@ -134,7 +135,7 @@ export class EarthquakesController {
     }
   }
 
-  //
+  //nhận thông báo 
   @Post("/user/getnotification") 
   async userGetNotification(
     @Res() res: Response,
@@ -155,4 +156,7 @@ export class EarthquakesController {
       });
     }
   }
+
+  //thay đổi thời gian nhận thông báo
+  
 }
