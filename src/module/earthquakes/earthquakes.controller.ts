@@ -95,6 +95,8 @@ export class EarthquakesController {
   async userGetEarthquakes(
     @Res() res: Response,
   ) {
+    console.log("vào userGetEarthquakes");
+    
     try {
       let result= await this.earthquakesService.userGetEarthquakes();
       if(result.status){

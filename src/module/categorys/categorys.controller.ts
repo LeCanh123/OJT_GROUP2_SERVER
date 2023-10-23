@@ -114,4 +114,27 @@ export class CategorysController {
       throw new HttpException('Controller err ', HttpStatus.BAD_REQUEST);
     }
   }
+
+
+
+  //khu vực dành cho user
+    //user find all
+    @Get('user/get')
+    async userfindAll(@Res() res: Response) {
+      try {
+        let userfindAllResult = await this.categorysService.userfindAll()
+        if(userfindAllResult){
+          return res.status(200).json(userfindAllResult);
+        }
+        return res.status(201).json(userfindAllResult);
+      } catch (error) {
+        return res.status(201).json({
+          status:false,
+          message:"Lấy danh sách category thất bại",
+          data: null,
+        });
+  
+        
+      }
+    }
 }
