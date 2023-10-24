@@ -64,9 +64,9 @@ export class EarthquakesController {
     }
   }
 
-  @Get('/test')
+  @Get('/test/1')
   async test() {
-    let getallResult = await this.earthquakesService.getNotificate('');
+    let getallResult = await this.earthquakesService.Testgettoken()
     return getallResult;
   }
 
@@ -140,6 +140,8 @@ export class EarthquakesController {
     @Res() res: Response,
     @Body() data
   ) {
+    console.log("vào nhận thông báo");
+    
     try {
       let result:any= await this.earthquakesService.userGetNotification(data)
       if(result.status){
@@ -149,7 +151,7 @@ export class EarthquakesController {
     } catch (error) {
       return res.status(201).json({ 
         status:false,
-        message:"lấy danh sách Earthquakes theo id thất bại"
+        message:"Lấy thông báo thất bại"
       });
     }
   }
@@ -160,8 +162,12 @@ export class EarthquakesController {
       @Res() res: Response,
       @Body() data
     ) {
+      console.log("vào thay đổi thời gian");
+      console.log("data",data);
+      
       try {
-        let result:any= await this.earthquakesService.changeTimeNotification("")
+
+        let result:any= await this.earthquakesService.changeTimeNotification(data)
         if(result.status){
           return res.status(200).json(result);
         }
