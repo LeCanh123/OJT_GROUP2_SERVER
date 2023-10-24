@@ -18,7 +18,7 @@ export class UsersService {
 
 
 
-  create(createUserDto: CreateUserDto) {
+  facebooklogin(data) {
     return 'This action adds a new user';
   }
 
