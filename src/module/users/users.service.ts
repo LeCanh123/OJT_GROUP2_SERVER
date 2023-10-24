@@ -59,7 +59,40 @@ export class UsersService {
   }
 
 
-  async googlelogin(data){}
+  async googlelogin(data){
+    console.log("data",data);
+    try{
+      let findUserResult=await this.userRepository.find({where:{googleid:data.data.profileObj.googleId}});
+      if(findUserResult.length==0){
+        let createUserResult=await this.userRepository.save({
+          email:data.data.profileObj.email,
+          type:UserType.Google,
+          googleid:data.data.profileObj.googleId,
+        }) 
+        let findUserResult=await this.userRepository.find({where:{googleid:data.data.profileObj.googleId}});
+        let token=await jwt.createTokenforever({...findUserResult[0]});
+        return {
+          status:true,
+          message:"Đăng nhập thành công",
+          token
+        }
+      }
+      else{
+        let token=await jwt.createTokenforever({...findUserResult[0]});
+        return {
+          status:true,
+          message:"Đăng nhập thành công",
+          token
+        }
+      }
+    }
+    catch(err){
+      return {
+        status:false,
+        message:"Đăng nhập thất bại",
+      }
+    }
+  }
 
 
 
