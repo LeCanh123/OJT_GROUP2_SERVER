@@ -203,7 +203,7 @@ export class EarthquakesController {
         return res.status(201).json({ 
           status:false,
           message:"lấy danh sách Earthquakes thất bại"
-          // 12345
+          // 123457
         });
       }
 
