@@ -71,7 +71,7 @@ export class EarthquakesController {
 
   @Get('/test/1')
   async test() {
-    let getallResult = await this.earthquakesService.Testgettoken()
+    let getallResult = await this.earthquakesService.Testgettoken();
     return getallResult;
   }
 
@@ -96,6 +96,7 @@ export class EarthquakesController {
   async sendMail(
     @Body() email: string,
     @Req() req: Request,
+    @Res() res: Response,
     createEarthquakeDto: CreateEarthquakeDto,
     id: string,
   ) {
@@ -104,20 +105,26 @@ export class EarthquakesController {
       console.log('data', data);
 
       /* Mail */
-      this.mail.sendMail({
-        subject:
-          'THÔNG TIN CẢNH BÁO THIÊN TAI - HỆ THỐNG CẢNH BÁO THIÊN TAI VIỆT NAM',
-        to: req.body.email,
-        html: templates.sendMailUser({
-          productName: 'HỆ THỐNG CẢNH BÁO THIÊN TAI VIỆT NAM',
-          productWebUrl: 'http://vndms.dmc.gov.vn/',
-          receiverName: 'User Name',
-          title: data.data[data.data.length - 1].name,
-          place: data.data[data.data.length - 1].place,
-          level: Number(data.data[data.data.length - 1].level),
-          timeStart: data.data[data.data.length - 1].time_start,
-        }),
-      });
+      if (data.status) {
+        this.mail.sendMail({
+          subject:
+            'THÔNG TIN CẢNH BÁO THIÊN TAI - HỆ THỐNG CẢNH BÁO THIÊN TAI VIỆT NAM',
+          to: req.body.email,
+          html: templates.sendMailUser({
+            productName: 'HỆ THỐNG CẢNH BÁO THIÊN TAI VIỆT NAM',
+            productWebUrl: 'http://vndms.dmc.gov.vn/',
+            receiverName: 'User Name',
+            title: data.data[data.data.length - 1].name,
+            place: data.data[data.data.length - 1].place,
+            level: Number(data.data[data.data.length - 1].level),
+            timeStart: data.data[data.data.length - 1].time_start,
+          }),
+        });
+
+        return res
+          .status(data.status ? HttpStatus.OK : HttpStatus.ACCEPTED)
+          .json(data);
+      }
     } catch (err) {
       console.log('err', err);
       throw new HttpException('Controller Error', HttpStatus.BAD_REQUEST);
@@ -161,14 +168,11 @@ export class EarthquakesController {
     }
   }
 
-  //nhận thông báo 
-  @Post("/user/getnotification") 
-  async userGetNotification(
-    @Res() res: Response,
-    @Body() data
-  ) {
-    console.log("vào nhận thông báo");
-    
+  //nhận thông báo
+  @Post('/user/getnotification')
+  async userGetNotification(@Res() res: Response, @Body() data) {
+    console.log('vào nhận thông báo');
+
     try {
       let result: any = await this.earthquakesService.userGetNotification(data);
       if (result.status) {
@@ -176,36 +180,32 @@ export class EarthquakesController {
       }
       return res.status(201).json(result);
     } catch (error) {
-      return res.status(201).json({ 
-        status:false,
-        message:"Lấy thông báo thất bại"
+      return res.status(201).json({
+        status: false,
+        message: 'Lấy thông báo thất bại',
       });
     }
   }
 
   //thay đổi thời gian nhận thông báo
-    @Post("/user/changetime")
-    async userChangestime(
-      @Res() res: Response,
-      @Body() data
-    ) {
-      console.log("vào thay đổi thời gian");
-      console.log("data",data);
-      
-      try {
+  @Post('/user/changetime')
+  async userChangestime(@Res() res: Response, @Body() data) {
+    console.log('vào thay đổi thời gian');
+    console.log('data', data);
 
-        let result:any= await this.earthquakesService.changeTimeNotification(data)
-        if(result.status){
-          return res.status(200).json(result);
-        }
-        return res.status(201).json(result);
-      } catch (error) {
-        return res.status(201).json({ 
-          status:false,
-          message:"lấy danh sách Earthquakes thất bại"
-       //mới
-        });
+    try {
+      let result: any =
+        await this.earthquakesService.changeTimeNotification(data);
+      if (result.status) {
+        return res.status(200).json(result);
       }
-
+      return res.status(201).json(result);
+    } catch (error) {
+      return res.status(201).json({
+        status: false,
+        message: 'lấy danh sách Earthquakes thất bại',
+        //mới
+      });
+    }
   }
 }
