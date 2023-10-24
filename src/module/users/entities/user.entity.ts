@@ -8,6 +8,15 @@ export class User {
   @Column({ unique: true })
   email!: string;
 
+  @Column()
+  displayName!: string;
+
+  @Column()
+  token!: string;
+
+  @Column()
+  type_login!: number;
+
   @Column({ nullable: true })
   time!: Date;
 }
