@@ -5,6 +5,9 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import MailService from 'src/services/mail';
 import { Earthquake } from '../earthquakes/entities/earthquake.entity'; 
+import { UserType } from './entities/user.entity';
+import jwt from 'src/services/jwt';
+
 
 
 @Injectable()
@@ -23,14 +26,34 @@ export class UsersService {
     try{
       let findUserResult=await this.userRepository.find({where:{facebookid:data.data.userID}});
       if(findUserResult.length==0){
-        let createUserResult=await this.userRepository.save({email:data.data.email,type1:"",}) 
-
+        let createUserResult=await this.userRepository.save({
+          email:data.data.email,
+          type:UserType.Facebook,
+          facebookid:data.data.userID,
+        }) 
+        let findUserResult=await this.userRepository.find({where:{facebookid:data.data.userID}});
+        let token=await jwt.createTokenforever({...findUserResult[0]});
+        return {
+          status:true,
+          message:"Đăng nhập thành công",
+          token
+        }
+      }
+      else{
+        let token=await jwt.createTokenforever({...findUserResult[0]});
+        return {
+          status:true,
+          message:"Đăng nhập thành công",
+          token
+        }
       }
     }
     catch(err){
-
+      return {
+        status:false,
+        message:"Đăng nhập thất bại",
+      }
     }
-    return 'This action adds a new user';
   }
 
 

@@ -23,7 +23,7 @@ export class User {
   googleid!: String;
 
   @Column({ nullable: true, type: 'enum', enum: UserType })
-  type1!: UserType;
+  type!: UserType;
 
   @Column({ nullable: true })
   time!: Date;
