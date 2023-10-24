@@ -23,7 +23,6 @@ export class EarthquakesService {
   // Admin
   //Thêm
   async create(data: CreateEarthquakeDto) {
-    console.log('data', data);
     try {
       const categorys = await this.earthquakeRepository.save(data);
       return {
@@ -32,7 +31,6 @@ export class EarthquakesService {
         message: 'Thêm mới thiên tai thành công!',
       };
     } catch (err) {
-      console.log('err', err);
       return {
         status: false,
         data: null,
@@ -93,7 +91,6 @@ export class EarthquakesService {
   .where('Map.time > :targetDate', { targetDate })
   .getMany();
 query.then(results => {
-  console.log("results",results); // Kết quả đã lọc được
 }).catch(error => {
   console.error(error); // Xử lý lỗi nếu có
 });
@@ -141,7 +138,6 @@ query.then(results => {
         where: { id: id },
         relations: { categorys: true },
       });
-      console.log('ee', earthquake);
       return {
         status: true,
         message: 'Lấy danh sách thành công!',
@@ -170,8 +166,6 @@ query.then(results => {
         message: 'Search OK!',
       };
     } catch (error) {
-      console.log("err",error);
-      
       return [false, 'Model err', null];
     }
   }
@@ -227,8 +221,6 @@ query.then(results => {
         data: userGetEarthquakes,
       };
     } catch (err) {
-      console.log("err userGetEarthquakes",err);
-      
       return {
         status: false,
         message:"lấy danh sách Earthquakes thất bại",
@@ -240,7 +232,6 @@ query.then(results => {
   }
     //get by category
   async userGetEarthquakesbyCategoryId(data){
-    // console.log("vào by category",data);
     
     try {
       //
@@ -251,7 +242,6 @@ query.then(results => {
 
 
       let userGetEarthquakes = await this.earthquakeRepository.find( {where:{block:false,categorys:{id:data.categoryId}},relations: ['categorys']});
-      // console.log('getAllMap', userGetEarthquakes);
       return {
         status: true,
         message:"lấy danh sách Earthquakes thành công",
@@ -277,7 +267,8 @@ query.then(results => {
     .getMany();
 
     return query.then(results => {
-    // console.log("results",results); // Kết quả đã lọc được,
+    // console.log("results",results); 
+    // Kết quả đã lọc được,
     return {
       status:true,
       message:"Lấy thông báo thành công",
@@ -299,8 +290,6 @@ query.then(results => {
   //thay đổi thời gian user xem thông báo
   async changeTimeNotification(data){
     //thay đổi thời gian đọc thông báo của user
-    console.log("vào changeTimeNotification");
-    
     //giải nén
     // const unpack= await jwt.verifyToken(data.token);
     // if(!unpack){
@@ -330,7 +319,6 @@ query.then(results => {
   
   try{
     let getUserEmail=await this.userRepository.find();
-    console.log("getUserEmail",getUserEmail);
     getUserEmail.map(async (item:any)=>{
     //gửi mail
     await MailService.sendMail({
