@@ -30,6 +30,7 @@ export class MessageService {
     const[message,total]=await this.messages.findAndCount({
       skip,
       take:limit,
+      order:{create_at:"DESC"}
     })
     const totalPage=Math.ceil(total/limit)
     return {

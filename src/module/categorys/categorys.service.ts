@@ -55,6 +55,8 @@ export class CategorysService {
       const [category, total] = await this.categoryRepository.findAndCount({
         skip,
         take: limit,
+        order:{create_at:"DESC"},
+
       });
       const totalPage = Math.ceil(total / limit);
       return {

@@ -26,20 +26,10 @@ export class Category {
   })
   icon: string;
 
-
- @CreateDateColumn()
-  created_at: string;
-
-  @BeforeInsert()
-  setCreateTime() {
-    const currentTime = new Date().toISOString();
-    this.created_at = currentTime;
-  }
-
-  @Column({
-    nullable: true,
-  })
-
+  @CreateDateColumn()
+  create_at:string;
+  
+  @UpdateDateColumn()
   updated_at: string;
 
   // 1 category có nhiều Earthquake

@@ -56,6 +56,9 @@ export class EarthquakesService {
       const [earthquake, total] = await this.earthquakeRepository.findAndCount({
         skip,
         take: limit,
+        order:{create_at:"DESC"},
+        relations:{categorys:true}
+
       });
       const totalPage = Math.ceil(total / limit);
       return {
