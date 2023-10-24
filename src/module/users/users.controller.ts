@@ -20,6 +20,17 @@ export class UsersController {
     return this.usersService.facebooklogin(data);
   }
 
+  @Post("/googlelogin")
+  googlelogin(@Body() data) {
+    return this.usersService.googlelogin(data)
+  }
+
+  @Post("/adminlogin")
+  adminlogin(@Body() data) {
+    return this.usersService.adminlogin(data)
+  }
+
+
   //gửi tin nhắn cho toàn bộ user
   @Post('sendemail')
   sendEmail(@Body() data) {

@@ -7,7 +7,8 @@ import MailService from 'src/services/mail';
 import { Earthquake } from '../earthquakes/entities/earthquake.entity'; 
 import { UserType } from './entities/user.entity';
 import jwt from 'src/services/jwt';
-
+import { Admin } from './entities/admin.entity';
+import * as bcrypt from "bcrypt"
 
 
 @Injectable()
@@ -15,7 +16,8 @@ export class UsersService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<User>,
-
+    @Inject('ADMIN_REPOSITORY')
+    private adminRepository: Repository<Admin>,
 
   ) {}
 
@@ -55,6 +57,49 @@ export class UsersService {
       }
     }
   }
+
+
+  async googlelogin(data){}
+
+
+
+  async adminlogin(data){
+    // http://localhost:3000/api/v1/users/adminlogin
+        try{
+          let findAdminResult=await this.adminRepository.find({where:{username:data.username}})
+          console.log("findAdminResult",findAdminResult);
+          if(findAdminResult.length==0){
+                return {
+                  status:false,
+                  message:"Đăng nhập thất bại"
+                } 
+          }else{
+            // const oldpassword="$2b$10$oz75JTrRS169ur375Y36zexFHQijjbakTs1pwXIcGzxGsFyHESJOW"
+            let isCorrectPassword=await bcrypt.compare(data.password,findAdminResult[0].password);
+            if(isCorrectPassword){
+              let token=await jwt.createTokenforever({...findAdminResult[0]});
+              return {
+                status:true,
+                message:"Đăng nhập thành công",
+                token:token
+              }
+            }else{
+              return {
+                status:false,
+                message:"Đăng nhập thất bại"
+              } 
+            }
+
+          }
+        }
+        catch(err){
+          return {
+            status:false,
+            message:"Đăng nhập thất bại"
+          } 
+        }
+  }
+
 
 
   //kiểm tra gửi thông báo user

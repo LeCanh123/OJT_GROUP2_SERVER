@@ -6,6 +6,7 @@ import { usersProviders } from './users.providers';
 import { earthquakeProviders } from '../earthquakes/earthquake.providers';
 import { EarthquakesService } from '../earthquakes/earthquakes.service';
 import { EarthquakesController } from '../earthquakes/earthquakes.controller';
+import { adminReponsitoryProviders } from '../userreponsitory/adminreponsitory.providers';
 
 @Module({
   imports: [DatabaseModule],
@@ -13,6 +14,8 @@ import { EarthquakesController } from '../earthquakes/earthquakes.controller';
   providers: [
     UsersService,
     ...usersProviders,
+    ...adminReponsitoryProviders
+
   ],
 })
 export class UsersModule {}
