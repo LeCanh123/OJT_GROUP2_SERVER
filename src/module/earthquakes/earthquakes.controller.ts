@@ -69,9 +69,9 @@ export class EarthquakesController {
     }
   }
 
-  @Get('/test')
+  @Get('/test/1')
   async test() {
-    let getallResult = await this.earthquakesService.getNotificate('');
+    let getallResult = await this.earthquakesService.Testgettoken()
     return getallResult;
   }
 
@@ -161,9 +161,14 @@ export class EarthquakesController {
     }
   }
 
-  //nhận thông báo
-  @Post('/user/getnotification')
-  async userGetNotification(@Res() res: Response, @Body() data) {
+  //nhận thông báo 
+  @Post("/user/getnotification") 
+  async userGetNotification(
+    @Res() res: Response,
+    @Body() data
+  ) {
+    console.log("vào nhận thông báo");
+    
     try {
       let result: any = await this.earthquakesService.userGetNotification(data);
       if (result.status) {
@@ -171,28 +176,35 @@ export class EarthquakesController {
       }
       return res.status(201).json(result);
     } catch (error) {
-      return res.status(201).json({
-        status: false,
-        message: 'lấy danh sách Earthquakes theo id thất bại',
+      return res.status(201).json({ 
+        status:false,
+        message:"Lấy thông báo thất bại"
       });
     }
   }
 
   //thay đổi thời gian nhận thông báo
-  @Post('/user/changetime')
-  async userChangestime(@Res() res: Response, @Body() data) {
-    try {
-      let result: any =
-        await this.earthquakesService.changeTimeNotification('');
-      if (result.status) {
-        return res.status(200).json(result);
+    @Post("/user/changetime")
+    async userChangestime(
+      @Res() res: Response,
+      @Body() data
+    ) {
+      console.log("vào thay đổi thời gian");
+      console.log("data",data);
+      
+      try {
+
+        let result:any= await this.earthquakesService.changeTimeNotification(data)
+        if(result.status){
+          return res.status(200).json(result);
+        }
+        return res.status(201).json(result);
+      } catch (error) {
+        return res.status(201).json({ 
+          status:false,
+          message:"lấy danh sách Earthquakes thất bại"
+        });
       }
-      return res.status(201).json(result);
-    } catch (error) {
-      return res.status(201).json({
-        status: false,
-        message: 'lấy danh sách Earthquakes thất bại',
-      });
-    }
+
   }
 }

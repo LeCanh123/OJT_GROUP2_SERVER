@@ -265,31 +265,53 @@ export class EarthquakesService {
   }
 
   //nhận thông báo
-  async userGetNotification(data) {
-    const targetDate = new Date('2023-10-12T03:51:34.000Z');
-    const query = this.earthquakeRepository
-      .createQueryBuilder('Earthquake')
+  async userGetNotification(data){
+    //giải nén user
+    try {
+      const unpack = jwt.verifyToken(data.token)
+      if(!unpack){
+        return {
+          status:false,
+          message:"Lấy thông báo thất bại",
+          data:null
+        }
+      }
+      let findUserResult=await this.userRepository.find({where:{id:unpack.id}});
+      const targetDate = new Date(findUserResult[0].time);//quy đổi thời gian user
+      const query = this.earthquakeRepository.createQueryBuilder("Earthquake")
       .where('Earthquake.time_notification > :targetDate', { targetDate })
       .getMany();
-
-    return query
-      .then((results) => {
-        // console.log("results",results);
-        // Kết quả đã lọc được,
+  
+      return query.then(results => {
+      console.log("results",results); 
+      // Kết quả đã lọc được,
+      return {
+        status:true,
+        message:"Lấy thông báo thành công",
+        data:results
+      }
+      }).catch(error => {
         return {
-          status: true,
-          message: 'Lấy thông báo thành công',
-          data: results,
-        };
-      })
-      .catch((error) => {
-        return {
-          status: false,
-          message: 'Lấy thông báo thất bại',
-          data: null,
-        };
-        // console.error(error); // Xử lý lỗi nếu có
+          status:false,
+          message:"Lấy thông báo thất bại",
+          data:null
+        }
+      // console.error(error); // Xử lý lỗi nếu có
       });
+
+
+    }
+    catch(err){
+      return {
+        status:false,
+        message:"Lấy thông báo thất bại",
+        data:null
+      }
+    }
+   
+
+    
+    
   }
 
   //thay đổi thời gian user xem thông báo
@@ -300,15 +322,38 @@ export class EarthquakesService {
     // if(!unpack){
 
     // }
-    try {
-      const currentTime = new Date();
-      let changeTimeResult = await this.userRepository
+      try{
+        const unpack = jwt.verifyToken(data.token)
+        if(!unpack){
+          return {
+            status:false,
+            message:"Thay đổi thời gian nhận thông báo thất bại",
+            data:null 
+          }
+        }
+        // let findUserResult=await this.userRepository.find({where:{id:unpack.id}});
+        const currentTime = new Date();
+        let changeTimeResult=await this.userRepository
         .createQueryBuilder()
         .update(User)
-        .set({ time: currentTime })
-        .where('id = :id', { id: '33378f43-671e-11ee-8359-b07b254d818e' })
+        .set({ time: currentTime})
+        .where("id = :id", { id:unpack.id })
         .execute();
-    } catch (err) {}
+
+        return {
+          status:true,
+          message:"Thay đổi thời gian nhận thông báo thành công",
+          data:null
+        }
+
+      }
+      catch(err){
+        return {
+          status:false,
+          message:"Thay đổi thời gian nhận thông báo thất bại",
+          data:null
+        }
+      }
   }
 
   //gửi email cho user
@@ -337,4 +382,15 @@ export class EarthquakesService {
       };
     }
   }
+
+  //test lấy token
+  async Testgettoken(){
+    console.log("vào test");
+    // http://localhost:3000/api/v1/earthquakes/test/1
+    //token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImIxOWZiMjk2LTcyMjEtMTFlZS1iNTU2LWIwN2IyNTRkODE4ZSIsImlhdCI6MTY5ODEyMDE0Nn0.73D4-3Bz65FvWwh1jt33UCspiAp0bNECUbMUIh6OnX0
+    let token=jwt.createTokenforever({id:"b19fb296-7221-11ee-b556-b07b254d818e"});
+    // console.log("token",token);
+    
+  }
+
 }
