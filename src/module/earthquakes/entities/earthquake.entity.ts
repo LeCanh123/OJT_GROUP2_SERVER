@@ -11,7 +11,7 @@ import {
 
 @Entity()
 export class Earthquake {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('increment')
   id!: string;
 
   @Column({ unique: true })
@@ -36,8 +36,8 @@ export class Earthquake {
   time_start: Date;
 
   @CreateDateColumn()
-  create_at:string;
-  
+  create_at: string;
+
   @UpdateDateColumn()
   updated_at: string;
 
