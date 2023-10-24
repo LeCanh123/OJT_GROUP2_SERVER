@@ -10,15 +10,20 @@ import {
   Query,
   HttpStatus,
   HttpException,
+  Req,
 } from '@nestjs/common';
 import { EarthquakesService } from './earthquakes.service';
 import { CreateEarthquakeDto } from './dto/create-earthquake.dto';
 import { UpdateEarthquakeDto } from './dto/update-earthquake.dto';
-import { Response } from 'express';
+import { Response, Request } from 'express';
+import { EmailService, templates } from 'src/utils/mail/mail.service';
 
 @Controller('earthquakes')
 export class EarthquakesController {
-  constructor(private readonly earthquakesService: EarthquakesService) {}
+  constructor(
+    private readonly earthquakesService: EarthquakesService,
+    private readonly mail: EmailService,
+  ) {}
 
   //tạo
   @Post()
@@ -86,94 +91,108 @@ export class EarthquakesController {
     }
   }
 
-
-
-
-
-
-//phần dành cho user
-
-  //get all earthquake 
-  @Get("/user/get") 
-  async userGetEarthquake(
-    @Res() res: Response,
-    @Body() data
+  /* Mail */
+  @Post('mail')
+  async sendMail(
+    @Body() email: string,
+    @Req() req: Request,
+    createEarthquakeDto: CreateEarthquakeDto,
+    id: string,
   ) {
     try {
-      let result= await this.earthquakesService.userGetEarthquakes();
-      if(result.status){
+      let data = await this.earthquakesService.findAll();
+      console.log('data', data);
+
+      /* Mail */
+      this.mail.sendMail({
+        subject:
+          'THÔNG TIN CẢNH BÁO THIÊN TAI - HỆ THỐNG CẢNH BÁO THIÊN TAI VIỆT NAM',
+        to: req.body.email,
+        html: templates.sendMailUser({
+          productName: 'HỆ THỐNG CẢNH BÁO THIÊN TAI VIỆT NAM',
+          productWebUrl: 'http://vndms.dmc.gov.vn/',
+          receiverName: 'User Name',
+          title: data.data[data.data.length - 1].name,
+          place: data.data[data.data.length - 1].place,
+          level: Number(data.data[data.data.length - 1].level),
+          timeStart: data.data[data.data.length - 1].time_start,
+        }),
+      });
+    } catch (err) {
+      console.log('err', err);
+      throw new HttpException('Controller Error', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  //phần dành cho user
+
+  //get all earthquake
+  @Get('/user/get')
+  async userGetEarthquake(@Res() res: Response, @Body() data) {
+    try {
+      let result = await this.earthquakesService.userGetEarthquakes();
+      if (result.status) {
         return res.status(200).json(result);
       }
       return res.status(201).json(result);
     } catch (error) {
-      return res.status(201).json({ 
-        status:false,
-        message:"lấy danh sách Earthquakes theo id thất bại"
+      return res.status(201).json({
+        status: false,
+        message: 'lấy danh sách Earthquakes theo id thất bại',
       });
     }
   }
-
 
   //get earthquake by category id
-  @Post("/user/getbyid") 
-  async userGetbyCategoryId(
-    @Res() res: Response,
-    @Body() data
-  ) {
+  @Post('/user/getbyid')
+  async userGetbyCategoryId(@Res() res: Response, @Body() data) {
     try {
-      let result= await this.earthquakesService.userGetEarthquakesbyCategoryId(data)
-      if(result.status){
+      let result =
+        await this.earthquakesService.userGetEarthquakesbyCategoryId(data);
+      if (result.status) {
         return res.status(200).json(result);
       }
       return res.status(201).json(result);
     } catch (error) {
-      return res.status(201).json({ 
-        status:false,
-        message:"lấy danh sách Earthquakes theo id thất bại"
+      return res.status(201).json({
+        status: false,
+        message: 'lấy danh sách Earthquakes theo id thất bại',
       });
     }
   }
 
-  //nhận thông báo 
-  @Post("/user/getnotification") 
-  async userGetNotification(
-    @Res() res: Response,
-    @Body() data
-  ) {
+  //nhận thông báo
+  @Post('/user/getnotification')
+  async userGetNotification(@Res() res: Response, @Body() data) {
     try {
-      let result:any= await this.earthquakesService.userGetNotification(data)
-      if(result.status){
+      let result: any = await this.earthquakesService.userGetNotification(data);
+      if (result.status) {
         return res.status(200).json(result);
       }
       return res.status(201).json(result);
     } catch (error) {
-      return res.status(201).json({ 
-        status:false,
-        message:"lấy danh sách Earthquakes theo id thất bại"
+      return res.status(201).json({
+        status: false,
+        message: 'lấy danh sách Earthquakes theo id thất bại',
       });
     }
   }
 
   //thay đổi thời gian nhận thông báo
-    @Post("/user/changetime")
-    async userChangestime(
-      @Res() res: Response,
-      @Body() data
-    ) {
-      try {
-        let result:any= await this.earthquakesService.changeTimeNotification("")
-        if(result.status){
-          return res.status(200).json(result);
-        }
-        return res.status(201).json(result);
-      } catch (error) {
-        return res.status(201).json({ 
-          status:false,
-          message:"lấy danh sách Earthquakes thất bại"
-        });
+  @Post('/user/changetime')
+  async userChangestime(@Res() res: Response, @Body() data) {
+    try {
+      let result: any =
+        await this.earthquakesService.changeTimeNotification('');
+      if (result.status) {
+        return res.status(200).json(result);
       }
+      return res.status(201).json(result);
+    } catch (error) {
+      return res.status(201).json({
+        status: false,
+        message: 'lấy danh sách Earthquakes thất bại',
+      });
     }
-
-
-
+  }
 }
