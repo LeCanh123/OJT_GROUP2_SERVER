@@ -323,7 +323,7 @@ query.then(results => {
           return {
             status:false,
             message:"Thay đổi thời gian nhận thông báo thất bại",
-            data:null
+            data:null 
           }
         }
         // let findUserResult=await this.userRepository.find({where:{id:unpack.id}});
