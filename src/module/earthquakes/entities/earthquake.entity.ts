@@ -56,5 +56,5 @@ export class Earthquake {
 
   //nhiều earthquake liên kết 1 category
   @ManyToOne(() => Category, (category) => category.earthquake)
-  categorys: Category[];
+  categorys: Category;
 }
