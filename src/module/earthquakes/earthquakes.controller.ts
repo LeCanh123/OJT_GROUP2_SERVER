@@ -204,6 +204,7 @@ export class EarthquakesController {
           status:false,
           message:"lấy danh sách Earthquakes thất bại"
           //00000
+          // 12345
         });
       }
 
