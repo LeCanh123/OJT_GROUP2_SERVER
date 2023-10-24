@@ -23,7 +23,7 @@ export class UsersService {
     try{
       let findUserResult=await this.userRepository.find({where:{facebookid:data.data.userID}});
       if(findUserResult.length==0){
-        let createUserResult=await this.userRepository.save({email:data.data.email,type1:,}) 
+        let createUserResult=await this.userRepository.save({email:data.data.email,type1:"",}) 
 
       }
     }
