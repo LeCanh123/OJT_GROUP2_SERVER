@@ -18,7 +18,18 @@ export class UsersService {
 
 
 
-  facebooklogin(data) {
+  async facebooklogin(data) {
+    console.log("data",data);
+    try{
+      let findUserResult=await this.userRepository.find({where:{facebookid:data.data.userID}});
+      if(findUserResult.length==0){
+        let createUserResult=await this.userRepository.save({email:data.data.email,type1:,}) 
+
+      }
+    }
+    catch(err){
+
+    }
     return 'This action adds a new user';
   }
 
