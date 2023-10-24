@@ -95,8 +95,6 @@ export class EarthquakesController {
     @Body() data
   ) {
     try {
-      console.log("data",data);
-      
       let result= await this.earthquakesService.userGetEarthquakesbyCategoryId(data)
       if(result.status){
         return res.status(200).json(result);
@@ -117,11 +115,7 @@ export class EarthquakesController {
     @Body() data
   ) {
     try {
-      console.log("data",data);
-      
       let result:any= await this.earthquakesService.userGetNotification(data)
-      console.log("result",result);
-      
       if(result.status){
         return res.status(200).json(result);
       }
@@ -140,8 +134,6 @@ export class EarthquakesController {
       @Res() res: Response,
       @Body() data
     ) {
-      console.log("vào userChangestime controller");
-      
       try {
         let result:any= await this.earthquakesService.changeTimeNotification("")
         if(result.status){
