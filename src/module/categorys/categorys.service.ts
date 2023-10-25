@@ -35,6 +35,32 @@ export class CategorysService {
       };
     }
   }
+    // Phân trang
+    async findAllPage(page: number, limit: number) {
+      try {
+        const skip = (page - 1) * limit;
+        const [category, total] = await this.categoryRepository.findAndCount({
+          skip,
+          take: limit,
+          order:{create_at:"DESC"},
+  
+        });
+        const totalPage = Math.ceil(total / limit);
+        return {
+          data: category,
+          page,
+          limit,
+          total,
+          totalPage,
+          message: 'Get ok',
+        };
+      } catch (error) {
+        return {
+          success: false,
+          message: 'Model err',
+        };
+      }
+    }
   //Lấy tất cả danh sách
   async findAll() {
     try {
@@ -48,32 +74,7 @@ export class CategorysService {
       return [false, 'Model err', null];
     }
   }
-  // Phân trang
-  async findAllPage(page: number, limit: number) {
-    try {
-      const skip = (page - 1) * limit;
-      const [category, total] = await this.categoryRepository.findAndCount({
-        skip,
-        take: limit,
-        order:{create_at:"DESC"},
 
-      });
-      const totalPage = Math.ceil(total / limit);
-      return {
-        data: category,
-        page,
-        limit,
-        total,
-        totalPage,
-        message: 'Get ok',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: 'Model err',
-      };
-    }
-  }
 
   //Lấy theo id
   async findOne(id: string) {
