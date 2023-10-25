@@ -131,6 +131,35 @@ export class EarthquakesController {
     }
   }
 
+
+
+ /* Chart */
+ @Post("getchart")
+ async getChart(@Body() data, @Res() res: Response) {
+  try {
+    let result:any = await this.earthquakesService.getChart(data)
+    if (result.status) {
+      return res.status(200).json(result);
+    }
+    return res.status(201).json(result);
+  } catch (error) {
+    return res.status(201).json({
+      status: false,
+      message: 'lấy danh sách chart thất bại',
+    });
+  }
+ }
+
+
+
+
+
+
+
+
+
+
+
   //phần dành cho user
 
   //get all earthquake
