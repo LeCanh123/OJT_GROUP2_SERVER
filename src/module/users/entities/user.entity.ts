@@ -12,9 +12,6 @@ export class User {
   displayName!: string;
 
   @Column()
-  token!: string;
-
-  @Column()
   type_login!: number;
 
   @Column({ nullable: true })
