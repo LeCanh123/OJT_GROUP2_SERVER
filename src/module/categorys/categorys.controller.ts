@@ -55,17 +55,6 @@ export class CategorysController {
     });
     return createCategoryResult;
   }
-
-  @Get()
-  async GetAll(@Res() res: Response) {
-    try {
-      let category = await this.categorysService.findAll();
-      return res.status(HttpStatus.OK).json(category);
-    } catch (error) {
-      console.log('err', error);
-    }
-  }
-
   //Lấy ,tìm kiếm ,phân trang
   @Get()
   async findAll(
@@ -86,7 +75,15 @@ export class CategorysController {
       throw new HttpException('Lỗi controller', HttpStatus.BAD_REQUEST);
     }
   }
-
+  @Get()
+  async GetAll(@Res() res: Response) {
+    try {
+      let category = await this.categorysService.findAll();
+      return res.status(HttpStatus.OK).json(category);
+    } catch (error) {
+      console.log('err', error);
+    }
+  }
   //Lấy theo id
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res: Response) {
@@ -113,9 +110,6 @@ export class CategorysController {
       throw new HttpException('Controller err ', HttpStatus.BAD_REQUEST);
     }
   }
-
-
-
   //khu vực dành cho user
     //user find all
     @Get('user/get')
