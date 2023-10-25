@@ -8,6 +8,8 @@ import { Category } from '../categorys/entities/category.entity';
 import { User } from '../users/entities/user.entity';
 import MailService from 'src/services/mail';
 import jwt from 'src/services/jwt';
+import { LessThanOrEqual, MoreThanOrEqual, Between, Raw } from 'typeorm';
+import { getYear, getMonth } from 'date-fns';
 
 @Injectable()
 export class EarthquakesService {
@@ -217,6 +219,55 @@ export class EarthquakesService {
       };
     }
   }
+
+
+  //Chart
+  async getChart(data){
+    try {
+    // Lấy năm để thống kê
+const year = 2023;
+
+// Truy vấn database sử dụng điều kiện thời gian và phép tính toán
+const chartData = await this.earthquakeRepository
+  .createQueryBuilder('Earthquake')
+  .select("DATE_FORMAT(earthquake.time_notification, '%Y-%m-%d') as name1")
+  .addSelect('COUNT(*) as uv')
+  .groupBy('name1')
+  .getRawMany();
+
+console.log(chartData);
+      return {
+        status: true,
+        message: 'lấy danh sách Chart thành công',
+        data: chartData,
+      };
+      
+    } catch (err) {
+      return {
+        status: false,
+        message: 'lấy danh sách Earthquakes thất bại',
+        data: err,
+      };
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   //phần dành cho user
   //user userGetEarthquakes
