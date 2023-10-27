@@ -24,9 +24,11 @@ export class EarthquakesService {
 
   // Admin
   //Thêm
-  async create(data: CreateEarthquakeDto) {
+  async create(data) {
     try {
-      const categorys = await this.earthquakeRepository.save(data);
+      console.log("create(data",data);
+      
+      const categorys = await this.earthquakeRepository.save({...data,categorys:{id:data.categorysId}});
       return {
         status: true,
         data: categorys,
