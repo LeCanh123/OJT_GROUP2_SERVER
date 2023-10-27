@@ -10,6 +10,7 @@ import { PassportModule } from '@nestjs/passport';
 import { User } from './module/users/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageModule } from './module/message/message.module';
+import { AdminModule } from './module/admin/admin.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { MessageModule } from './module/message/message.module';
       entities: [User],
       synchronize: true,
     }),
+    AdminModule,
   ],
 
   controllers: [AppController],
