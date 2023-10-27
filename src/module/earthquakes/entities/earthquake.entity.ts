@@ -50,7 +50,7 @@ export class Earthquake {
   block: boolean;
 
   // @Column({
-  //   nullable: false,
+  //   nullable: true,
   // })
   // categorysId: string;
 
