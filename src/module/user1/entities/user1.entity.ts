@@ -9,7 +9,7 @@ export enum UserType {
 
 
 @Entity()
-export class User1 {
+export class User1 { 
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -20,10 +20,10 @@ export class User1 {
   name: string;
 
   @Column({ nullable: true })
-  facebookid!: String;
+  facebookid: String;
 
   @Column({ nullable: true })
-  googleid!: String;
+  googleid: String;
 
   @Column({ nullable: true, type: 'enum', enum: UserType })
   type!: UserType;

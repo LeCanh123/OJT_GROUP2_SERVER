@@ -10,6 +10,7 @@ import MailService from 'src/services/mail';
 import jwt from 'src/services/jwt';
 import { LessThanOrEqual, MoreThanOrEqual, Between, Raw } from 'typeorm';
 import { getYear, getMonth } from 'date-fns';
+import { User1 } from '../user1/entities/user1.entity';
 
 @Injectable()
 export class EarthquakesService {
@@ -18,8 +19,8 @@ export class EarthquakesService {
     private earthquakeRepository: Repository<Earthquake>,
     @Inject('CATEGORYS_REPOSITORY')
     private categoryRepository: Repository<Category>,
-    @Inject('USERRPS_REPOSITORY')
-    private userRepository: Repository<User>,
+    @Inject('USER1_REPOSITORY')
+    private userRepository: Repository<User1>,
   ) {}
 
   // Admin
