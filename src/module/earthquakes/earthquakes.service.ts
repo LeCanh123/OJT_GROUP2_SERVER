@@ -226,12 +226,53 @@ export class EarthquakesService {
     try {
     // Lấy năm để thống kê
 const year = 2023;
+console.log("data",data); 
+
 
 // Truy vấn database sử dụng điều kiện thời gian và phép tính toán
-const chartData = await this.earthquakeRepository
+if(data.typechart=="day"&& data.categoryid != "null"){
+  const chartData = await this.earthquakeRepository
   .createQueryBuilder('Earthquake')
   .select("DATE_FORMAT(earthquake.time_notification, '%Y-%m-%d') as name1")
   .addSelect('COUNT(*) as uv')
+  .where('earthquake.time_notification >= :startDate', { startDate:data.timestart })
+  .andWhere('earthquake.time_notification <= :endDate', { endDate:data.timeend })
+  .andWhere('earthquake.categorysId = :categorysId', { categorysId:data.categoryid })
+  .groupBy('name1')
+  .getRawMany();
+
+console.log(chartData); 
+      return {
+        status: true,
+        message: 'lấy danh sách Chart thành công',
+        data: chartData,
+      };
+}
+if(data.typechart=="month"&& data.categoryid != "null"){
+  const chartData = await this.earthquakeRepository
+  .createQueryBuilder('Earthquake')
+  .select("DATE_FORMAT(earthquake.time_notification, '%Y-%m') as name1")
+  .addSelect('COUNT(*) as uv')
+  .where('earthquake.time_notification >= :startDate', { startDate:data.timestart })
+  .andWhere('earthquake.time_notification <= :endDate', { endDate:data.timeend })
+  .andWhere('earthquake.categorysId = :categorysId', { categorysId:data.categoryid })
+  .groupBy('name1')
+  .getRawMany();
+
+console.log(chartData); 
+      return {
+        status: true,
+        message: 'lấy danh sách Chart thành công',
+        data: chartData,
+      };
+}
+if(data.typechart=="day"){
+  const chartData = await this.earthquakeRepository
+  .createQueryBuilder('Earthquake')
+  .select("DATE_FORMAT(earthquake.time_notification, '%Y-%m-%d') as name1")
+  .addSelect('COUNT(*) as uv')
+  .where('earthquake.time_notification >= :startDate', { startDate:data.timestart })
+  .andWhere('earthquake.time_notification <= :endDate', { endDate:data.timeend })
   .groupBy('name1')
   .getRawMany();
 
@@ -241,11 +282,32 @@ console.log(chartData);
         message: 'lấy danh sách Chart thành công',
         data: chartData,
       };
+}
+if(data.typechart=="month" && data.categoryid=="null"){
+  const chartData = await this.earthquakeRepository
+  .createQueryBuilder('Earthquake')
+  .select("DATE_FORMAT(earthquake.time_notification, '%Y-%m') as name1")
+  .addSelect('COUNT(*) as uv')
+  .where('earthquake.time_notification >= :startDate', { startDate:data.timestart })
+  .andWhere('earthquake.time_notification <= :endDate', { endDate:data.timeend })
+  .groupBy('name1')
+  .getRawMany();
+
+console.log(chartData);
+      return {
+        status: true,
+        message: 'lấy danh sách Chart thành công',
+        data: chartData,
+      };
+}
+
       
     } catch (err) {
+      console.log("err",err);
+      
       return {
         status: false,
-        message: 'lấy danh sách Earthquakes thất bại',
+        message: 'lấy danh sách Chart thất bại',
         data: err,
       };
     }

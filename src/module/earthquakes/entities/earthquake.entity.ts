@@ -49,10 +49,10 @@ export class Earthquake {
   @Column({ default: false })
   block: boolean;
 
-  @Column({
-    nullable: false,
-  })
-  categorysId: string;
+  // @Column({
+  //   nullable: false,
+  // })
+  // categorysId: string;
 
   //nhiều earthquake liên kết 1 category
   @ManyToOne(() => Category, (category) => category.earthquake)
