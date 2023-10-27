@@ -3,9 +3,9 @@ import { UsersService1 } from './user1.service';
 import { UsersController1 } from './user1.controller';
 import { DatabaseModule } from '../typeorms/database.module';
 import { userReponsitoryProviders1 } from './user1reponsitory.providers'; 
-import { earthquakeProviders } from '../earthquakes/earthquake.providers';
-import { EarthquakesService } from '../earthquakes/earthquakes.service';
-import { EarthquakesController } from '../earthquakes/earthquakes.controller';
+// import { earthquakeProviders } from '../earthquakes/earthquake.providers';
+// import { EarthquakesService } from '../earthquakes/earthquakes.service';
+// import { EarthquakesController } from '../earthquakes/earthquakes.controller';
 
 
 @Module({

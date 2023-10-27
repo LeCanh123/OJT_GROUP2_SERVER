@@ -25,6 +25,7 @@ export class UsersService1 {
       if(findUserResult.length==0){
         let createUserResult=await this.userRepository.save({
           email:data.data.email,
+          name:data.data.name,
           type:UserType.Facebook,
           facebookid:data.data.userID,
         }) 
@@ -58,9 +59,12 @@ export class UsersService1 {
     console.log("data",data);
     try{
       let findUserResult=await this.userRepository.find({where:{googleid:data.data.profileObj.googleId}});
+      console.log("findUserResult",findUserResult);
+      
       if(findUserResult.length==0){
         let createUserResult=await this.userRepository.save({
           email:data.data.profileObj.email,
+          name:data.data.profileObj.name,
           type:UserType.Google,
           googleid:data.data.profileObj.googleId,
         }) 
@@ -68,7 +72,7 @@ export class UsersService1 {
         let token=await jwt.createTokenforever({...findUserResult[0]});
         return {
           status:true,
-          message:"Đăng nhập thành công",
+          message:"Đăng nhập thành công", 
           token
         }
       }
@@ -82,20 +86,14 @@ export class UsersService1 {
       }
     }
     catch(err){
+      console.log("err",err);
+      
       return {
         status:false,
         message:"Đăng nhập thất bại",
       }
     }
   }
-
-
-
-
-
-
-  
-
 
 
 }
