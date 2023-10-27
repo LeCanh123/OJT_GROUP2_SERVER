@@ -11,6 +11,8 @@ import { User } from './module/users/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageModule } from './module/message/message.module';
 import { UsersModule1 } from './module/user1/user1.module';
+import { AdminModule } from './module/admin/admin.module';
+
 
 @Module({
   imports: [
@@ -31,6 +33,7 @@ import { UsersModule1 } from './module/user1/user1.module';
       entities: [User],
       synchronize: true,
     }),
+    AdminModule,
   ],
 
   controllers: [AppController],
