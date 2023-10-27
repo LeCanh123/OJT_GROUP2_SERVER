@@ -28,7 +28,7 @@ export class EarthquakesService {
     try {
       console.log("create(data",data);
       
-      const categorys = await this.earthquakeRepository.save({...data,categorys:{id:data.categorysId}});
+      const categorys = await this.earthquakeRepository.save({...data,categorys:{id:data.categorysId},time_notification:new Date()});
       return {
         status: true,
         data: categorys,
