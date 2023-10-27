@@ -137,15 +137,20 @@ export class EarthquakesController {
  @Post("getchart")
  async getChart(@Body() data, @Res() res: Response) {
   try {
-    let result:any = await this.earthquakesService.getChart(data)
+    let result:any = await this.earthquakesService.getChart(data);
+    console.log("result",result);
+    
     if (result.status) {
       return res.status(200).json(result);
     }
     return res.status(201).json(result);
   } catch (error) {
+    console.log("error",error);
+    
     return res.status(201).json({
       status: false,
       message: 'lấy danh sách chart thất bại',
+      err:error
     });
   }
  }
