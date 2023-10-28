@@ -4,7 +4,8 @@ import { AuthService } from './auth.service';
 
 export class CreateTokenDto {
   email: string;
-  displayName: string;
+  oauth_id: string;
+  display_name: string;
   type_login: number;
 }
 
