@@ -12,7 +12,7 @@ export class AuthService {
 
   async findOrCreateUser(details: UserDetails) {
     const user = await this.userRepository.findOneBy({
-      email: details.email,
+      oauth_id: details.oauth_id,
     });
 
     if (user) return user;
