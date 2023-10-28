@@ -12,7 +12,7 @@ export class AdminService {
   ) {}
 
   async findByUserNameAndPassword(userName: string, password: string): Promise<Admin | null> {
-    
+    // let isCorrectPassword=await bcrypt.compare(data.password,findAdminResult[0].password);
     const admin = await this.adminRepository.findOne({ where: { userName, password } });
     console.log("admin.userName",admin.userName);
     console.log("admin.password",admin.password);
@@ -25,4 +25,5 @@ export class AdminService {
       password:""
     });
   }
+
 }
