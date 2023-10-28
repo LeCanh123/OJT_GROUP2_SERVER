@@ -6,9 +6,10 @@ import {
   Patch,
   Param,
   Delete,
+  Res,
 } from '@nestjs/common';
 import { UsersService1 } from './user1.service'; 
-
+import { Response } from 'express';
 
 @Controller('users1')
 export class UsersController1 {
@@ -24,5 +25,21 @@ export class UsersController1 {
     return this.usersService.googlelogin(data)
   }
 
-
+  @Post("/checktoken")
+  async checktoken(@Body() data,@Res() res: Response) {
+    try {
+      const { token } = data;
+      const result = await this.usersService.userChecktoken(token)
+      if (result.status) {
+        return res.status(200).json(result);
+      }
+      return res.status(201).json(result);
+    } catch (error) {
+      return res.status(201).json({
+        status: false,
+        message: 'Lỗi hệ thống',
+        err:error
+      });
+    }
+  }
 }
