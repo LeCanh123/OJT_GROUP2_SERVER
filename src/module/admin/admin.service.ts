@@ -1,6 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Admin } from './entities/admin.entity';
+import * as bcrypt from "bcrypt"
+
 
 @Injectable()
 export class AdminService {
@@ -14,9 +16,13 @@ export class AdminService {
     const admin = await this.adminRepository.findOne({ where: { userName, password } });
     console.log("admin.userName",admin.userName);
     console.log("admin.password",admin.password);
-    
-    
-
     return admin || null;
+  }
+
+  async adminRegister(){
+    const adminResult = await this.adminRepository.save({
+      userName:"admin",
+      password:""
+    });
   }
 }
