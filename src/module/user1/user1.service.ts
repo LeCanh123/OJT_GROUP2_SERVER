@@ -97,5 +97,51 @@ export class UsersService1 {
     }
   }
 
+  async userChecktoken(token){
+    
 
+    try{
+     const unpack= await jwt.verifyToken(token);
+     if(!unpack){
+      return {
+        status:false,
+        message:"Chưa đăng nhập"
+      }
+     }
+     else{
+      let findFacebookIdResult=await this.userRepository.findOne({where:{facebookid:unpack.facebookid}})
+      if(findFacebookIdResult.facebookid){
+        return {
+          status:true,
+          message:"Bạn là user"
+        }
+      }
+
+      let findGoogleIdResult=await this.userRepository.findOne({where:{googleid:unpack.googleid}})
+      if(findGoogleIdResult.googleid){
+        return {
+          status:true,
+          message:"Bạn là user"
+        }
+      }
+
+      return {
+        status:false,
+        message:"Bạn không phải là user"
+      }
+
+
+     }
+    }
+    catch(err){
+      console.log("err",err);
+      
+      return {
+        status:false,
+        message:"Lỗi hệ thống"
+      }
+    }
+    
+
+  }
 }

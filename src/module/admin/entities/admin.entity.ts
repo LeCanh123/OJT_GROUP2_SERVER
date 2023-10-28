@@ -5,7 +5,7 @@ export class Admin {
     @PrimaryGeneratedColumn('uuid')
     id: string;
     
-    @Column({ unique: true, length: 20 })
+    @Column({ unique: true})
     userName: string;
 
     @Column()
