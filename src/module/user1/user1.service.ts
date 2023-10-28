@@ -28,6 +28,7 @@ export class UsersService1 {
           name:data.data.name,
           type:UserType.Facebook,
           facebookid:data.data.userID,
+          time:new Date()
         }) 
         let findUserResult=await this.userRepository.find({where:{facebookid:data.data.userID}});
         let token=await jwt.createTokenforever({...findUserResult[0]});
@@ -67,6 +68,7 @@ export class UsersService1 {
           name:data.data.profileObj.name,
           type:UserType.Google,
           googleid:data.data.profileObj.googleId,
+          time:new Date()
         }) 
         let findUserResult=await this.userRepository.find({where:{googleid:data.data.profileObj.googleId}});
         let token=await jwt.createTokenforever({...findUserResult[0]});
