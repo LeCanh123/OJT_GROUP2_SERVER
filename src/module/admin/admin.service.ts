@@ -59,7 +59,16 @@ export class AdminService {
       }
      }
      else{
+      if(unpack.userName==undefined){
+        return {
+          status:false,
+          message:"Chưa đăng nhập"
+        }
+      }
       let findAdminResult=await this.adminRepository.findOne({where:{userName:unpack.userName}})
+      console.log("findAdminResult.userName",findAdminResult.userName);
+      console.log("unpack.userName",unpack.userName==undefined);
+      
       if(findAdminResult.userName){
         return {
           status:true,
