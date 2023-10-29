@@ -109,21 +109,29 @@ export class UsersService1 {
       }
      }
      else{
-      let findFacebookIdResult=await this.userRepository.findOne({where:{facebookid:unpack.facebookid}})
-      if(findFacebookIdResult.facebookid){
-        return {
-          status:true,
-          message:"Bạn là user"
+      if(unpack.facebookid!=undefined){
+        let findFacebookIdResult=await this.userRepository.findOne({where:{facebookid:unpack.facebookid}})
+        if(findFacebookIdResult.facebookid){
+          return {
+            status:true,
+            message:"Bạn là user"
+          }
+        }
+
+
+      }
+
+
+      if(unpack.googleid!=undefined){
+        let findGoogleIdResult=await this.userRepository.findOne({where:{googleid:unpack.googleid}})
+        if(findGoogleIdResult.googleid){
+          return {
+            status:true,
+            message:"Bạn là user"
+          }
         }
       }
 
-      let findGoogleIdResult=await this.userRepository.findOne({where:{googleid:unpack.googleid}})
-      if(findGoogleIdResult.googleid){
-        return {
-          status:true,
-          message:"Bạn là user"
-        }
-      }
 
       return {
         status:false,
