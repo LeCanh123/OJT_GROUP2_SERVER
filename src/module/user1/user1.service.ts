@@ -184,7 +184,7 @@ async searchByName(searchByName:string){
   try {
     let listUser=await this.userRepository.find({
       where:{
-        name:ILike(`%${searchByName}`)
+        name:ILike(`%${searchByName}%`)
       }
     })
     return {
