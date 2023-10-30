@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Equal, Repository } from 'typeorm';
+import { Equal, ILike, Repository } from 'typeorm';
 import { User1 } from './entities/user1.entity';
+import { take } from 'rxjs';
 import MailService from 'src/services/mail';
 import { Earthquake } from '../earthquakes/entities/earthquake.entity';
 import { UserType } from './entities/user1.entity';
@@ -11,8 +12,10 @@ import * as bcrypt from 'bcrypt';
 export class UsersService1 {
   constructor(
     @Inject('USER1_REPOSITORY')
-    private userRepository: Repository<User1>,
+    private  userRepository: Repository<User1>,
   ) {}
+
+
 
   async facebooklogin(data) {
     console.log('data', data);
@@ -143,6 +146,57 @@ export class UsersService1 {
       };
     }
   }
+  //phân trang
+  async fillAll(page:number,limit:number){
+    const skip = (page - 1) * limit;
+  try {
+    console.log("skip",skip);
+    console.log(" take",take);
+    
+    
+    let [users,total]= await this.userRepository.findAndCount({
+      skip,
+      take:limit,
+      order:{id:"DESC"}
+    })
+    const totalPage = Math.ceil(total / limit);
+    return {
+      page,
+      limit,
+      totalPage,
+      data:users,
+      message: 'Lấy tất cả danh sách thành công!',
+    }
+  }
+   catch (error) {
+    console.log("err",error);
+    return {
+      status:false,
+      data:null,
+      message:"Model err"
+    }
+
+
+  }
+}
+//tìm kiếm 
+async searchByName(searchByName:string){
+  try {
+    let listUser=await this.userRepository.find({
+      where:{
+        name:ILike(`%${searchByName}`)
+      }
+    })
+    return {
+      data:listUser,
+      message:"Search OK !"
+    }
+  } catch (error) {
+    return [false,'Model err',null]
+  }
+}
+
+  
   async getAllUser() {
     try {
       const users = await this.userRepository.find();

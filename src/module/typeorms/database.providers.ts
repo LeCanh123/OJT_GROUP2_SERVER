@@ -13,7 +13,7 @@ export const databaseProviders = [
           password: '',
           database: 'nhom2',
           entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
-          synchronize: true,
+          synchronize: false,
         });
         await dataSource.initialize();
         return dataSource;

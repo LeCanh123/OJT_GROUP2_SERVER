@@ -9,6 +9,7 @@ export const categorysProviders = [
         return dataSource.getRepository(Category);
       } catch (err) {
         console.log('Chưa kết nối database');
+        return null;
       }
     },
     inject: ['DATA_SOURCE'],

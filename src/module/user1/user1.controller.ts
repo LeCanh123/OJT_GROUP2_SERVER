@@ -7,6 +7,9 @@ import {
   Param,
   Delete,
   Res,
+  HttpStatus,
+  HttpException,
+  Query,
   Req,
 } from '@nestjs/common';
 import { UsersService1 } from './user1.service';
@@ -43,6 +46,27 @@ export class UsersController1 {
       });
     }
   }
+  //Lấy ,tìm kiếm ,phân trang
+  @Get()
+  async findAll(
+    @Res() res: Response,
+    @Query('q') q: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    try {
+      let result;
+      if (q != undefined) {
+        result = await this.usersService.searchByName(q);
+      } else {
+        result = await this.usersService.fillAll(page, limit);
+      }
+      return res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      throw new HttpException('Controller err ', HttpStatus.BAD_REQUEST);
+    }
+  }
+
 
   @Get('/getusers')
   async getAllUser(@Req() req: Request, @Res() res: Response) {

@@ -9,6 +9,7 @@ export const adminProviders = [
         return dataSource.getRepository(Admin);
       } catch (err) {
         console.log('Chưa kết nối database');
+        return null;
       }
     },
     inject: ['DATA_SOURCE'],
