@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 import { User1 } from './entities/user1.entity';
 import MailService from 'src/services/mail';
 import { Earthquake } from '../earthquakes/entities/earthquake.entity'; 
@@ -21,7 +21,7 @@ export class UsersService1 {
   async facebooklogin(data) {
     console.log("data",data);
     try{
-      let findUserResult=await this.userRepository.find({where:{facebookid:data.data.userID}});
+      let findUserResult=await this.userRepository.find({where:{facebookid:Equal(data.data.userID)}});
       if(findUserResult.length==0){
         let createUserResult=await this.userRepository.save({
           email:data.data.email,
@@ -30,7 +30,7 @@ export class UsersService1 {
           facebookid:data.data.userID,
           time:new Date()
         }) 
-        let findUserResult=await this.userRepository.find({where:{facebookid:data.data.userID}});
+        let findUserResult=await this.userRepository.find({where:{facebookid:Equal(data.data.userID)}});
         let token=await jwt.createTokenforever({...findUserResult[0]});
         return {
           status:true,
@@ -59,7 +59,7 @@ export class UsersService1 {
   async googlelogin(data){
     console.log("data",data);
     try{
-      let findUserResult=await this.userRepository.find({where:{googleid:data.data.profileObj.googleId}});
+      let findUserResult=await this.userRepository.find({where:{googleid: Equal(data.data.profileObj.googleId)}});
       console.log("findUserResult",findUserResult);
       
       if(findUserResult.length==0){
@@ -70,7 +70,7 @@ export class UsersService1 {
           googleid:data.data.profileObj.googleId,
           time:new Date()
         }) 
-        let findUserResult=await this.userRepository.find({where:{googleid:data.data.profileObj.googleId}});
+        let findUserResult=await this.userRepository.find({where:{googleid:Equal(data.data.profileObj.googleId)}});
         let token=await jwt.createTokenforever({...findUserResult[0]});
         return {
           status:true,
@@ -110,7 +110,7 @@ export class UsersService1 {
      }
      else{
       if(unpack.facebookid!=undefined){
-        let findFacebookIdResult=await this.userRepository.findOne({where:{facebookid:unpack.facebookid}})
+        let findFacebookIdResult=await this.userRepository.findOne({where:{facebookid:Equal(unpack.facebookid)}})
         if(findFacebookIdResult.facebookid){
           return {
             status:true,
@@ -123,7 +123,7 @@ export class UsersService1 {
 
 
       if(unpack.googleid!=undefined){
-        let findGoogleIdResult=await this.userRepository.findOne({where:{googleid:unpack.googleid}})
+        let findGoogleIdResult=await this.userRepository.findOne({where:{googleid:Equal(unpack.googleid)}})
         if(findGoogleIdResult.googleid){
           return {
             status:true,
