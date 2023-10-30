@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 import { Admin } from './entities/admin.entity';
 import * as bcrypt from "bcrypt"
 import jwt from 'src/services/jwt';
@@ -15,7 +15,7 @@ export class AdminService {
   async findByUserNameAndPassword(userName: string, password: string){
     
     try{
-      const admin:any = await this.adminRepository.findOne({ where: { userName} });
+      const admin:any = await this.adminRepository.findOne({ where: { userName:Equal(userName)} });
       console.log("admin",admin);
       
       let isCorrectPassword=await bcrypt.compare(password,admin.password);
@@ -65,7 +65,7 @@ export class AdminService {
           message:"Chưa đăng nhập"
         }
       }
-      let findAdminResult=await this.adminRepository.findOne({where:{userName:unpack.userName}})
+      let findAdminResult=await this.adminRepository.findOne({where:{userName:Equal(unpack.userName)}})
       console.log("findAdminResult.userName",findAdminResult.userName);
       console.log("unpack.userName",unpack.userName==undefined);
       
