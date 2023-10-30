@@ -24,9 +24,6 @@ export class AdminController {
       });
     }
   }
-
-
-
   @Post("/checktoken")
   async checktoken(@Body() data,@Res() res: Response) {
     try {
