@@ -1,9 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Equal, ILike, Repository } from 'typeorm';
 import { User1 } from './entities/user1.entity';
+import { take } from 'rxjs';
+import MailService from 'src/services/mail';
+import { Earthquake } from '../earthquakes/entities/earthquake.entity';
 import { UserType } from './entities/user1.entity';
 import jwt from 'src/services/jwt';
-import { take } from 'rxjs';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService1 {
@@ -12,7 +15,9 @@ export class UsersService1 {
     private  userRepository: Repository<User1>,
   ) {}
 
-  async facebooklogin(data: any) {
+
+
+  async facebooklogin(data) {
     console.log('data', data);
     try {
       let findUserResult = await this.userRepository.find({
@@ -190,4 +195,23 @@ async searchByName(searchByName:string){
     return [false,'Model err',null]
   }
 }
+
+  
+  async getAllUser() {
+    try {
+      const users = await this.userRepository.find();
+      return {
+        status: true,
+        data: users,
+        message: 'Lấy danh sách user thành công',
+      };
+    } catch (err) {
+      console.log('err', err);
+      return {
+        status: false,
+        data: null,
+        message: 'Lỗi Service',
+      };
+    }
+  }
 }
