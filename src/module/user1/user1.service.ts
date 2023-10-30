@@ -3,15 +3,16 @@ import { Equal, ILike, Repository } from 'typeorm';
 import { User1 } from './entities/user1.entity';
 import { UserType } from './entities/user1.entity';
 import jwt from 'src/services/jwt';
+import { take } from 'rxjs';
 
 @Injectable()
 export class UsersService1 {
   constructor(
     @Inject('USER1_REPOSITORY')
-    private userRepository: Repository<User1>,
+    private  userRepository: Repository<User1>,
   ) {}
 
-  async facebooklogin(data) {
+  async facebooklogin(data: any) {
     console.log('data', data);
     try {
       let findUserResult = await this.userRepository.find({
@@ -144,6 +145,10 @@ export class UsersService1 {
   async fillAll(page:number,limit:number){
     const skip = (page - 1) * limit;
   try {
+    console.log("skip",skip);
+    console.log(" take",take);
+    
+    
     let [users,total]= await this.userRepository.findAndCount({
       skip,
       take:limit,
