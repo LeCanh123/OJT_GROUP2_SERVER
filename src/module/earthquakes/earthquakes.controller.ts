@@ -17,14 +17,14 @@ import { CreateEarthquakeDto } from './dto/create-earthquake.dto';
 import { UpdateEarthquakeDto } from './dto/update-earthquake.dto';
 import { Response, Request } from 'express';
 import { EmailService, templates } from 'src/utils/mail/mail.service';
-import { UsersService1 } from '../user1/user1.service';
+import { UsersService } from '../user/user.service';
 
 @Controller('earthquakes')
 export class EarthquakesController {
   constructor(
     private readonly earthquakesService: EarthquakesService,
     private readonly mailService: EmailService,
-    private readonly usersService1: UsersService1,
+    private readonly usersService1: UsersService,
   ) {}
 
   //tạo

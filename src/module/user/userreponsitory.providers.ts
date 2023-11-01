@@ -1,12 +1,12 @@
 import { DataSource } from 'typeorm';
-import { User1 } from './entities/user1.entity';
+import { User } from './entities/user.entity';
 
-export const userReponsitoryProviders1 = [
+export const userReponsitoryProviders = [
   {
-    provide: 'USER1_REPOSITORY',
+    provide: 'USER_REPOSITORY',
     useFactory: (dataSource: DataSource) => {
       try {
-        return dataSource.getRepository(User1);
+        return dataSource.getRepository(User);
       } catch (err) {
         console.log('Chưa kết nối database');
       }
