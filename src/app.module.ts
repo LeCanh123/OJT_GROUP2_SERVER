@@ -13,7 +13,6 @@ import { MessageModule } from './module/message/message.module';
 import { UsersModule1 } from './module/user1/user1.module';
 import { AdminModule } from './module/admin/admin.module';
 
-
 @Module({
   imports: [
     UsersModule1,
@@ -36,4 +35,4 @@ import { AdminModule } from './module/admin/admin.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {} 
+export class AppModule {}

@@ -1,3 +1,4 @@
+import { IsLatitude, IsLongitude } from 'class-validator';
 import { Category } from 'src/module/categorys/entities/category.entity';
 import {
   BeforeInsert,
@@ -11,20 +12,28 @@ import {
 
 @Entity()
 export class Earthquake {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @Column({ unique: true })
-  name!: string;
+  name: string;
+
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 5,
+  })
+  lat!: number;
+
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 5,
+  })
+  lng!: number;
 
   @Column()
-  lat!: string;
-
-  @Column()
-  lng!: string;
-
-  @Column()
-  level: string;
+  level: number;
 
   @Column() //tên tỉnh thành phố
   place!: string;

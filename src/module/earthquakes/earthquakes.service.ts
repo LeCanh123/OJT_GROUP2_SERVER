@@ -27,9 +27,13 @@ export class EarthquakesService {
   //Thêm
   async create(data) {
     try {
-      console.log("create(data",data);
-      
-      const categorys = await this.earthquakeRepository.save({...data,categorys:{id:data.categorysId},time_notification:new Date()});
+      console.log('data', data);
+
+      const categorys = await this.earthquakeRepository.save({
+        ...data,
+        categorys: { id: data.categorysId },
+        time_notification: new Date(),
+      });
       return {
         status: true,
         data: categorys,
@@ -37,16 +41,20 @@ export class EarthquakesService {
       };
     } catch (err) {
       console.log('err', err);
-      return {
-        status: false,
-        data: null,
-        message: 'Thêm mới thiên tai thất bại!',
-      };
+
+      if (err.code == 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD') {
+        return {
+          status: false,
+          data: null,
+          message: 'Giá trị nhập không hợp lệ!',
+        };
+      }
     }
   }
 
   async findAll() {
     let result = await this.earthquakeRepository.find();
+
     return {
       status: true,
       data: result,
@@ -61,9 +69,8 @@ export class EarthquakesService {
       const [earthquake, total] = await this.earthquakeRepository.findAndCount({
         skip,
         take: limit,
-        order:{create_at:"DESC"},
-        relations:{categorys:true}
-
+        order: { create_at: 'DESC' },
+        relations: { categorys: true },
       });
       const totalPage = Math.ceil(total / limit);
       return {
@@ -223,101 +230,120 @@ export class EarthquakesService {
     }
   }
 
-
   //Chart
-  async getChart(data){
+  async getChart(data) {
     try {
-    // Lấy năm để thống kê
-const year = 2023;
-console.log("data",data); 
+      // Lấy năm để thống kê
+      const year = 2023;
+      console.log('data', data);
 
+      // Truy vấn database sử dụng điều kiện thời gian và phép tính toán
+      if (data.typechart == 'day' && data.categoryid != 'null') {
+        const chartData = await this.earthquakeRepository
+          .createQueryBuilder('Earthquake')
+          .select(
+            "DATE_FORMAT(Earthquake.time_notification, '%Y-%m-%d') as name1",
+          )
+          .addSelect('COUNT(*) as uv')
+          .where('Earthquake.time_notification >= :startDate', {
+            startDate: data.timestart,
+          })
+          .andWhere('Earthquake.time_notification <= :endDate', {
+            endDate: data.timeend,
+          })
+          .andWhere('Earthquake.categorys.id = :categorysId1', {
+            categorysId1: data.categoryid,
+          })
+          .groupBy('name1')
+          .getRawMany();
 
-// Truy vấn database sử dụng điều kiện thời gian và phép tính toán
-if(data.typechart=="day"&& data.categoryid != "null"){
-  const chartData = await this.earthquakeRepository
-  .createQueryBuilder('Earthquake')
-  .select("DATE_FORMAT(Earthquake.time_notification, '%Y-%m-%d') as name1")
-  .addSelect('COUNT(*) as uv')
-  .where('Earthquake.time_notification >= :startDate', { startDate:data.timestart })
-  .andWhere('Earthquake.time_notification <= :endDate', { endDate:data.timeend })
-  .andWhere('Earthquake.categorys.id = :categorysId1', { categorysId1:data.categoryid })
-  .groupBy('name1')
-  .getRawMany();
+        // const chartData = await this.earthquakeRepository
+        // .createQueryBuilder('earthquake')
+        // .select('earthquake.id', 'id')
+        // .addSelect('earthquake.name', 'name')
+        // .addSelect('earthquake.time_notification', 'time_notification')
+        // // Thêm các trường dữ liệu khác bạn muốn lấy vào phần select
+        // .where('earthquake.categorys.id = :categorysId1', { categorysId1: String(data.categoryid) })
+        // .getRawMany();
 
+        console.log(chartData);
+        return {
+          status: true,
+          message: 'lấy danh sách Chart thành công',
+          data: chartData,
+        };
+      }
+      if (data.typechart == 'month' && data.categoryid != 'null') {
+        const chartData = await this.earthquakeRepository
+          .createQueryBuilder('Earthquake')
+          .select("DATE_FORMAT(earthquake.time_notification, '%Y-%m') as name1")
+          .addSelect('COUNT(*) as uv')
+          .where('earthquake.time_notification >= :startDate', {
+            startDate: data.timestart,
+          })
+          .andWhere('earthquake.time_notification <= :endDate', {
+            endDate: data.timeend,
+          })
+          .andWhere('earthquake.categorysId = :categorysId', {
+            categorysId: data.categoryid,
+          })
+          .groupBy('name1')
+          .getRawMany();
 
-  // const chartData = await this.earthquakeRepository
-  // .createQueryBuilder('earthquake')
-  // .select('earthquake.id', 'id')
-  // .addSelect('earthquake.name', 'name')
-  // .addSelect('earthquake.time_notification', 'time_notification')
-  // // Thêm các trường dữ liệu khác bạn muốn lấy vào phần select
-  // .where('earthquake.categorys.id = :categorysId1', { categorysId1: String(data.categoryid) })
-  // .getRawMany();
+        console.log(chartData);
+        return {
+          status: true,
+          message: 'lấy danh sách Chart thành công',
+          data: chartData,
+        };
+      }
+      if (data.typechart == 'day') {
+        const chartData = await this.earthquakeRepository
+          .createQueryBuilder('Earthquake')
+          .select(
+            "DATE_FORMAT(earthquake.time_notification, '%Y-%m-%d') as name1",
+          )
+          .addSelect('COUNT(*) as uv')
+          .where('earthquake.time_notification >= :startDate', {
+            startDate: data.timestart,
+          })
+          .andWhere('earthquake.time_notification <= :endDate', {
+            endDate: data.timeend,
+          })
+          .groupBy('name1')
+          .getRawMany();
 
-console.log(chartData); 
-      return {
-        status: true,
-        message: 'lấy danh sách Chart thành công',
-        data: chartData,
-      };
-}
-if(data.typechart=="month"&& data.categoryid != "null"){
-  const chartData = await this.earthquakeRepository
-  .createQueryBuilder('Earthquake')
-  .select("DATE_FORMAT(earthquake.time_notification, '%Y-%m') as name1")
-  .addSelect('COUNT(*) as uv')
-  .where('earthquake.time_notification >= :startDate', { startDate:data.timestart })
-  .andWhere('earthquake.time_notification <= :endDate', { endDate:data.timeend })
-  .andWhere('earthquake.categorysId = :categorysId', { categorysId:data.categoryid })
-  .groupBy('name1')
-  .getRawMany();
+        console.log(chartData);
+        return {
+          status: true,
+          message: 'lấy danh sách Chart thành công',
+          data: chartData,
+        };
+      }
+      if (data.typechart == 'month' && data.categoryid == 'null') {
+        const chartData = await this.earthquakeRepository
+          .createQueryBuilder('Earthquake')
+          .select("DATE_FORMAT(earthquake.time_notification, '%Y-%m') as name1")
+          .addSelect('COUNT(*) as uv')
+          .where('earthquake.time_notification >= :startDate', {
+            startDate: data.timestart,
+          })
+          .andWhere('earthquake.time_notification <= :endDate', {
+            endDate: data.timeend,
+          })
+          .groupBy('name1')
+          .getRawMany();
 
-console.log(chartData); 
-      return {
-        status: true,
-        message: 'lấy danh sách Chart thành công',
-        data: chartData,
-      };
-} 
-if(data.typechart=="day"){
-  const chartData = await this.earthquakeRepository
-  .createQueryBuilder('Earthquake')
-  .select("DATE_FORMAT(earthquake.time_notification, '%Y-%m-%d') as name1")
-  .addSelect('COUNT(*) as uv')
-  .where('earthquake.time_notification >= :startDate', { startDate:data.timestart })
-  .andWhere('earthquake.time_notification <= :endDate', { endDate:data.timeend })
-  .groupBy('name1')
-  .getRawMany();
-
-console.log(chartData);
-      return {
-        status: true,
-        message: 'lấy danh sách Chart thành công',
-        data: chartData,
-      };
-}
-if(data.typechart=="month" && data.categoryid=="null"){
-  const chartData = await this.earthquakeRepository
-  .createQueryBuilder('Earthquake')
-  .select("DATE_FORMAT(earthquake.time_notification, '%Y-%m') as name1")
-  .addSelect('COUNT(*) as uv')
-  .where('earthquake.time_notification >= :startDate', { startDate:data.timestart })
-  .andWhere('earthquake.time_notification <= :endDate', { endDate:data.timeend })
-  .groupBy('name1')
-  .getRawMany();
-
-console.log(chartData);
-      return {
-        status: true,
-        message: 'lấy danh sách Chart thành công',
-        data: chartData,
-      };
-}
-
-      
+        console.log(chartData);
+        return {
+          status: true,
+          message: 'lấy danh sách Chart thành công',
+          data: chartData,
+        };
+      }
     } catch (err) {
-      console.log("err",err);
-      
+      console.log('err', err);
+
       return {
         status: false,
         message: 'lấy danh sách Chart thất bại',
@@ -325,24 +351,6 @@ console.log(chartData);
       };
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   //phần dành cho user
   //user userGetEarthquakes
