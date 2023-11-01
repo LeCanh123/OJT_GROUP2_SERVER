@@ -17,21 +17,24 @@ import { CreateEarthquakeDto } from './dto/create-earthquake.dto';
 import { UpdateEarthquakeDto } from './dto/update-earthquake.dto';
 import { Response, Request } from 'express';
 import { EmailService, templates } from 'src/utils/mail/mail.service';
+import { UsersService1 } from '../user1/user1.service';
 
 @Controller('earthquakes')
 export class EarthquakesController {
   constructor(
     private readonly earthquakesService: EarthquakesService,
-    private readonly mail: EmailService,
+    private readonly mailService: EmailService,
+    private readonly usersService1: UsersService1,
   ) {}
 
   //tạo
   @Post()
   async create(@Body() data, @Res() res: Response) {
     try {
+      let serRes = await this.earthquakesService.create(data);
       return res
-        .status(HttpStatus.OK)
-        .json(await this.earthquakesService.create(data));
+        .status(serRes.status ? HttpStatus.OK : HttpStatus.ACCEPTED)
+        .json(serRes);
     } catch (error) {
       throw new HttpException('Controller err ', HttpStatus.BAD_REQUEST);
     }
@@ -97,33 +100,49 @@ export class EarthquakesController {
     @Body() email: string,
     @Req() req: Request,
     @Res() res: Response,
-    createEarthquakeDto: CreateEarthquakeDto,
-    id: string,
   ) {
     try {
       let data = await this.earthquakesService.findAll();
-      console.log('data', data);
+      const users = await this.usersService1.getAllUser();
+      const emails = users.data?.map((user) => user.email);
+
+      const uniqueEmails = emails.filter(
+        (email, index) => emails.indexOf(email) === index,
+      );
 
       /* Mail */
       if (data.status) {
-        this.mail.sendMail({
-          subject:
-            'THÔNG TIN CẢNH BÁO THIÊN TAI - HỆ THỐNG CẢNH BÁO THIÊN TAI VIỆT NAM',
-          to: req.body.email,
-          html: templates.sendMailUser({
-            productName: 'HỆ THỐNG CẢNH BÁO THIÊN TAI VIỆT NAM',
-            productWebUrl: 'http://vndms.dmc.gov.vn/',
-            receiverName: 'User Name',
-            title: data.data[data.data.length - 1].name,
-            place: data.data[data.data.length - 1].place,
-            level: Number(data.data[data.data.length - 1].level),
-            timeStart: data.data[data.data.length - 1].time_start,
-          }),
-        });
+        if (uniqueEmails.length > 0) {
+          let emailSent = false;
+          uniqueEmails.forEach((email) => {
+            if (!emailSent) {
+              this.mailService.sendMail({
+                subject:
+                  'THÔNG TIN CẢNH BÁO THIÊN TAI - HỆ THỐNG CẢNH BÁO THIÊN TAI VIỆT NAM',
+                to: email,
+                html: templates.sendMailUser({
+                  productName: 'HỆ THỐNG CẢNH BÁO THIÊN TAI VIỆT NAM',
+                  productWebUrl: 'http://vndms.dmc.gov.vn/',
+                  receiverName: users.data[0].name,
+                  title: data.data[data.data.length - 1].name,
+                  place: data.data[data.data.length - 1].place,
+                  level: Number(data.data[data.data.length - 1].level),
+                  timeStart: data.data[data.data.length - 1].time_start,
+                }),
+              });
+              emailSent = true;
+            }
+          });
 
-        return res
-          .status(data.status ? HttpStatus.OK : HttpStatus.ACCEPTED)
-          .json(data);
+          return res
+            .status(HttpStatus.OK)
+            .json({ success: 'Đã gửi mail thành công!' });
+        } else {
+          return res.status(HttpStatus.BAD_REQUEST).json({
+            success: false,
+            message: 'Không tìm thấy người dùng!',
+          });
+        }
       }
     } catch (err) {
       console.log('err', err);
@@ -131,39 +150,27 @@ export class EarthquakesController {
     }
   }
 
+  /* Chart */
+  @Post('getchart')
+  async getChart(@Body() data, @Res() res: Response) {
+    try {
+      let result: any = await this.earthquakesService.getChart(data);
+      console.log('result', result);
 
+      if (result.status) {
+        return res.status(200).json(result);
+      }
+      return res.status(201).json(result);
+    } catch (error) {
+      console.log('error', error);
 
- /* Chart */
- @Post("getchart")
- async getChart(@Body() data, @Res() res: Response) {
-  try {
-    let result:any = await this.earthquakesService.getChart(data);
-    console.log("result",result);
-    
-    if (result.status) {
-      return res.status(200).json(result);
+      return res.status(201).json({
+        status: false,
+        message: 'lấy danh sách chart thất bại',
+        err: error,
+      });
     }
-    return res.status(201).json(result);
-  } catch (error) {
-    console.log("error",error);
-    
-    return res.status(201).json({
-      status: false,
-      message: 'lấy danh sách chart thất bại',
-      err:error
-    });
   }
- }
-
-
-
-
-
-
-
-
-
-
 
   //phần dành cho user
 

@@ -4,13 +4,12 @@ import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import * as multer from 'multer';
 
-
 import * as session from 'express-session';
 import * as passport from 'passport';
 
 //upload file
 import { json, urlencoded } from 'express';
-import { VersioningType } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
   dotenv.config();
@@ -37,6 +36,13 @@ async function bootstrap() {
   //upload file
   const upload = multer({ dest: 'uploads/' });
   app.use(upload.any());
+
+  /* Validation */
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: false,
+    }),
+  );
 
   await app.listen(3000);
 }

@@ -28,7 +28,7 @@ import { AdminModule } from './module/admin/admin.module';
       password: '',
       database: 'nhom2',
       entities: [],
-      synchronize: false,
+      synchronize: true,
     }),
   ],
 
