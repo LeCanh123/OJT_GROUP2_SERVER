@@ -5,10 +5,9 @@ import { earthquakeProviders } from './earthquake.providers';
 import { DatabaseModule } from '../typeorms/database.module';
 import { CategorysService } from '../categorys/categorys.service';
 import { categorysProviders } from '../categorys/categorys.providers';
-import { userReponsitoryProviders } from '../userreponsitory/userreponsitory.providers';
+import { userReponsitoryProviders } from '../user/userreponsitory.providers';
 import { EmailService } from 'src/utils/mail/mail.service';
-import { UsersService1 } from '../user1/user1.service';
-import { userReponsitoryProviders1 } from '../user1/user1reponsitory.providers';
+import { UsersService } from '../user/user.service';
 
 @Module({
   imports: [DatabaseModule],
@@ -20,8 +19,8 @@ import { userReponsitoryProviders1 } from '../user1/user1reponsitory.providers';
     ...categorysProviders,
   
     EmailService,
-    UsersService1,
-    ...userReponsitoryProviders1,
+    UsersService,
+    ...userReponsitoryProviders,
   ],
 })
 export class EarthquakesModule {}

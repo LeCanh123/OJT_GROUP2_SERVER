@@ -12,12 +12,12 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import { UsersService1 } from './user1.service';
+import { UsersService } from './user.service';
 import { Response } from 'express';
 
 @Controller('users1')
-export class UsersController1 {
-  constructor(private readonly usersService: UsersService1) {}
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
 
   @Post('/facebooklogin')
   facebooklogin(@Body() data) {

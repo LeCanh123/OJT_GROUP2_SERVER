@@ -9,7 +9,7 @@ export enum UserType {
 
 
 @Entity()
-export class User1 { 
+export class User { 
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

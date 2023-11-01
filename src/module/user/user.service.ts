@@ -1,18 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Equal, ILike, Repository } from 'typeorm';
-import { User1 } from './entities/user1.entity';
+import { User } from './entities/user.entity';
 import { take } from 'rxjs';
 import MailService from 'src/services/mail';
 import { Earthquake } from '../earthquakes/entities/earthquake.entity';
-import { UserType } from './entities/user1.entity';
+import { UserType } from './entities/user.entity';
 import jwt from 'src/services/jwt';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class UsersService1 {
+export class UsersService {
   constructor(
-    @Inject('USER1_REPOSITORY')
-    private userRepository: Repository<User1>,
+    @Inject('USER_REPOSITORY')
+    private userRepository: Repository<User>,
   ) {}
 
   async facebooklogin(data) {

@@ -5,12 +5,11 @@ import { ILike, Repository } from 'typeorm';
 import { Earthquake } from './entities/earthquake.entity';
 import { log } from 'console';
 import { Category } from '../categorys/entities/category.entity';
-import { User } from '../users/entities/user.entity';
 import MailService from 'src/services/mail';
 import jwt from 'src/services/jwt';
 import { LessThanOrEqual, MoreThanOrEqual, Between, Raw } from 'typeorm';
 import { getYear, getMonth } from 'date-fns';
-import { User1 } from '../user1/entities/user1.entity';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class EarthquakesService {
@@ -19,8 +18,8 @@ export class EarthquakesService {
     private earthquakeRepository: Repository<Earthquake>,
     @Inject('CATEGORYS_REPOSITORY')
     private categoryRepository: Repository<Category>,
-    @Inject('USER1_REPOSITORY')
-    private userRepository: Repository<User1>,
+    @Inject('USER_REPOSITORY')
+    private userRepository: Repository<User>,
   ) {}
 
   // Admin
