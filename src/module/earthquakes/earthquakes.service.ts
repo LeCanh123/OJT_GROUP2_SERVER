@@ -24,7 +24,21 @@ export class EarthquakesService {
 
   // Admin
   //Thêm
-  async create(data) {
+  async create(data: {
+    id: string;
+    name: string;
+    lat: number;
+    lng: number;
+    level: number;
+    place: string;
+    size: number;
+    time_start: Date;
+    create_at: string;
+    updated_at: string;
+    time_notification: Date;
+    block: boolean;
+    categorysId: string;
+  }) {
     try {
       console.log('data', data);
 
@@ -33,9 +47,13 @@ export class EarthquakesService {
         categorys: { id: data.categorysId },
         time_notification: new Date(),
       });
+
+      const sortData = await this.earthquakeRepository.find({
+        order: { create_at: 'DESC' },
+      });
       return {
         status: true,
-        data: categorys,
+        data: sortData,
         message: 'Thêm mới thiên tai thành công!',
       };
     } catch (err) {
